@@ -1,0 +1,26 @@
+<svg width="420" height="120" viewBox="0 0 420 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="logoGrad" x1="14" y1="14" x2="106" y2="106" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#60A5FA"/>
+      <stop offset="1" stop-color="#1D4ED8"/>
+    </linearGradient>
+    <linearGradient id="textGrad" x1="130" y1="24" x2="408" y2="96" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1E3A8A"/>
+      <stop offset="1" stop-color="#2563EB"/>
+    </linearGradient>
+    <filter id="softShadow" x="0" y="0" width="120" height="120" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#1D4ED8" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <g filter="url(#softShadow)">
+    <rect x="10" y="10" width="100" height="100" rx="24" fill="url(#logoGrad)"/>
+    <path d="M43 37C43 33.7 46.6 31.6 49.5 33.4L79.5 51.4C82.2 53.1 82.2 56.9 79.5 58.6L49.5 76.6C46.6 78.4 43 76.3 43 73V37Z" fill="white"/>
+    <path d="M66 80L77.5 68.5L85 76L66 95L50 79L57.5 71.5L66 80Z" fill="#DBEAFE"/>
+  </g>
+  <text x="130" y="56" fill="url(#textGrad)" font-size="38" font-weight="800" font-family="Pretendard, Apple SD Gothic Neo, Noto Sans KR, sans-serif" letter-spacing="-0.8">
+    Video PLR
+  </text>
+  <text x="130" y="86" fill="#64748B" font-size="18" font-weight="600" font-family="Pretendard, Apple SD Gothic Neo, Noto Sans KR, sans-serif" letter-spacing="0.2">
+    Premium Clip Package
+  </text>
+</svg>
