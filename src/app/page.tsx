@@ -117,7 +117,7 @@ export default function LandingPage() {
       <div className="sticky top-0 z-50 border-b border-blue-500 bg-gradient-to-r from-blue-700 via-blue-600 to-blue-700 shadow-md backdrop-blur">
         <div className="max-w-6xl mx-auto px-4 md:px-6 py-1.5 md:py-2 flex items-center justify-center">
           <img
-            src="/BARODE_logo.svg"
+            src="/BARODE_logo_final.png"
             alt="Video PLR 로고"
             className="h-7 md:h-8 w-auto"
           />
