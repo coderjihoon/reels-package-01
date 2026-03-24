@@ -29,7 +29,7 @@ export default function LandingPage() {
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [paymentWidget, setPaymentWidget] = useState<PaymentWidgetInstance | null>(null);
   const paymentMethodsWidgetRef = useRef<ReturnType<PaymentWidgetInstance["renderPaymentMethods"]> | null>(null);
-  const price = 26000;
+  const price = 30000;
 
   const clientKey = process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY || "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm";
   const customerKey = "lMFsftZj_6_dYqQmAwrGn";
@@ -114,18 +114,15 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 pb-24 lg:pb-0">
-      
-      {/* Top Banner */}
-      <div className="bg-red-600 text-white py-2 px-4 text-center text-xs md:text-sm font-medium sticky top-0 z-50 shadow-sm flex flex-col md:flex-row items-center justify-center gap-1 md:gap-2">
-        <span className="flex items-center gap-1 font-bold">
-          <span className="animate-pulse">🚨</span> (PLR 패키지 구매 고객 전용 할인 페이지)
-        </span>
-        <span className="hidden md:inline">|</span>
-        <span className="opacity-90 font-normal">
-          기존 구매자님들을 위한 특별 할인가가 적용된 페이지입니다.
-        </span>
+      <div className="sticky top-0 z-50 border-b border-blue-500 bg-gradient-to-r from-blue-700 via-blue-600 to-blue-700 shadow-md backdrop-blur">
+        <div className="max-w-6xl mx-auto px-4 md:px-6 py-1.5 md:py-2 flex items-center justify-center">
+          <img
+            src="/BARODE_로고_흰색.png"
+            alt="Video PLR 로고"
+            className="h-7 md:h-8 w-auto"
+          />
+        </div>
       </div>
-
       <div className="w-full bg-white border-b border-slate-200 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-white pointer-events-none"></div>
         {/* Hero Section */}
@@ -187,7 +184,10 @@ export default function LandingPage() {
             {tabs.map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => scrollToSection(tab.id)}
+                onClick={() => {
+                  setActiveTab(tab.id);
+                  scrollToSection(tab.id);
+                }}
                 className={`flex-1 min-w-[80px] py-4 text-sm md:text-base font-bold text-center border-b-2 transition-colors whitespace-nowrap px-4 ${
                   activeTab === tab.id
                     ? "border-blue-600 text-blue-600 bg-blue-50/30"
@@ -427,23 +427,6 @@ export default function LandingPage() {
                   </ul>
                 </div>
 
-                <div className="bg-blue-600 text-white rounded-3xl p-8 space-y-6 shadow-lg shadow-blue-200 relative overflow-hidden">
-                  <div className="absolute top-0 right-0 p-4 opacity-10">
-                    <Gift className="w-24 h-24" />
-                  </div>
-                  <Badge className="bg-yellow-400 text-yellow-900 font-extrabold hover:bg-yellow-400 border-none px-3 py-1">독점 혜택</Badge>
-                  <div className="space-y-2">
-                    <h3 className="text-2xl font-bold leading-tight">
-                      구매자 한정<br />
-                      '1:1 수익화 가이드 상담'<br />
-                      <span className="text-yellow-300">(이메일 무제한)</span>
-                    </h3>
-                  </div>
-                  <p className="text-blue-100 text-sm leading-relaxed">
-                    콘텐츠 활용법부터 수익화 노하우까지 <br />
-                    밀착 케어해 드립니다. 처음이라도 걱정 마세요!
-                  </p>
-                </div>
               </div>
             </section>
 
@@ -485,7 +468,7 @@ export default function LandingPage() {
                       { 
                         title: "초특가 할인", 
                         subtitle: "Special Price",
-                        content: "3월 31일 종료 후 정상가(79,000원) 변경 \n현재 26,000원 파격 할인가 적용 중",
+                        content: "3월 31일 종료 후 정상가(79,000원) 변경 \n현재 30,000원 파격 할인가 적용 중",
                         icon: Zap,
                         color: "text-yellow-600",
                         bgColor: "bg-yellow-100"
@@ -499,9 +482,9 @@ export default function LandingPage() {
                         bgColor: "bg-blue-100"
                       },
                       { 
-                        title: "1:1 밀착 케어", 
-                        subtitle: "Unlimited Care",
-                        content: "막막함 제로! \n1:1 수익화 가이드 이메일 상담 무제한 제공",
+                        title: "SNS 최적화 소스", 
+                        subtitle: "SNS Optimized",
+                        content: "조회수가 보장된 고품질 영상 소스 5,000개 이상을 즉시 다운로드하여 평생 소장할 수 있습니다.",
                         icon: CheckCircle,
                         color: "text-emerald-600",
                         bgColor: "bg-emerald-100"
@@ -530,16 +513,17 @@ export default function LandingPage() {
                     <br />
                     지금 바로 시작하기
                   </h3>
-                  <p className="text-blue-100 text-sm opacity-90">현재 접속하신 페이지는 'PLR 패키지 구매 고객' 전용 시크릿 할인 페이지입니다.</p>
                 </div>
 
                 <div className="bg-white/15 border border-white/35 rounded-3xl p-8 md:p-10 flex flex-col items-center text-center gap-8 backdrop-blur-sm max-w-lg mx-auto w-full shadow-2xl">
                   <div className="w-full">
                     <p className="text-white/85 text-sm font-bold mb-2 tracking-widest uppercase">상품명</p>
-                    <p className="text-2xl md:text-3xl font-black">영상 부업 올인원 패키지</p>
+                    <p className="text-2xl md:text-3xl font-black whitespace-pre-line">
+                      {"조회수 보장!\n쇼츠/릴스/틱톡 영상 패키지"}
+                    </p>
                   </div>
                   
-                  <div className="w-full border-t border-white/10 pt-8">
+                  <div className="w-full border-t border-white/30 pt-8">
                     <div className="w-full max-w-xs mx-auto rounded-2xl px-4 py-5 flex flex-col items-center gap-4">
                       <div className="w-full space-y-2">
                         <div className="flex items-center justify-between text-sm md:text-base text-white/90">
@@ -548,12 +532,12 @@ export default function LandingPage() {
                         </div>
                         <div className="flex items-center justify-between text-sm md:text-base text-white">
                           <span>일반 할인가</span>
-                          <span className="font-semibold">32,000원</span>
+                          <span className="font-semibold">30,000원</span>
                         </div>
                       </div>
                       <p className="text-white text-sm font-black tracking-[0.16em] uppercase">최종 혜택가</p>
-                      <p className="text-5xl md:text-6xl font-black text-yellow-300">26,000<span className="text-2xl md:text-3xl">원</span></p>
-                      <Badge className="bg-red-500 text-white border-none font-bold text-sm py-1 px-3">70% OFF 적용됨</Badge>
+                      <p className="text-5xl md:text-6xl font-black text-yellow-300">30,000<span className="text-2xl md:text-3xl">원</span></p>
+                      <Badge className="bg-red-500 text-white border-none font-bold text-sm py-1 px-3">62% OFF 적용됨</Badge>
                     </div>
                   </div>
 
@@ -598,7 +582,7 @@ export default function LandingPage() {
                 <span>32,000원</span>
               </div>
               <div className="flex justify-between items-center pt-2">
-                <span className="font-bold text-slate-900">PLR 구매자 할인가</span>
+                <span className="font-bold text-slate-900">최종 혜택가</span>
                 <div className="text-right">
                   <div className="text-3xl font-extrabold text-blue-600">{price.toLocaleString()}<span className="text-xl">원</span></div>
                 </div>
