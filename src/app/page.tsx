@@ -8,15 +8,11 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import {
   Clock,
-  PlaySquare,
   CheckCircle,
-  Youtube,
   ShieldCheck,
-  AlertCircle,
   Check,
   Zap,
   Gift,
-  FileVideo,
   TrendingUp,
   Share2,
   RefreshCcw,
@@ -120,7 +116,6 @@ export default function LandingPage() {
             src="/BARODE_logo_final.png"
             alt="Video PLR 로고"
             loading="eager"
-            fetchPriority="high"
             className="h-7 md:h-8 w-auto"
           />
         </div>
@@ -170,7 +165,6 @@ export default function LandingPage() {
                   src="/hero.png" 
                   alt="영상 편집 패키지 예시" 
                   loading="eager"
-                  fetchPriority="high"
                   className="w-full h-full object-cover"
                 />
               <div className="absolute bottom-3 left-6 right-6">
@@ -260,12 +254,16 @@ export default function LandingPage() {
               <div className="relative">
                 <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-2xl blur opacity-10"></div>
                 <div className="relative bg-white border border-blue-100 p-8 rounded-2xl shadow-sm text-center overflow-hidden">
-                  <div className="mb-8 overflow-hidden max-w-md mx-auto">
-                    <img 
-                      src="/solution-image.png" 
-                      alt="Solution Illustration" 
-                      loading="lazy"
-                      className="w-full h-auto"
+                  <div className="mb-8 overflow-hidden max-w-[220px] md:max-w-[260px] mx-auto">
+                    <video
+                      src="/video-01.mp4"
+                      aria-label="Solution Illustration"
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      preload="metadata"
+                      className="w-full h-auto rounded-xl"
                     />
                   </div>
                   <p className="text-lg md:text-xl text-slate-700 font-medium leading-relaxed">
@@ -385,7 +383,7 @@ export default function LandingPage() {
                 <div className="relative z-10 space-y-8 max-w-3xl mx-auto text-center">
                   <p className="text-lg md:text-xl text-slate-700 leading-relaxed font-medium">
                     한국에선 아직 생소한 <span className="text-blue-600 font-bold underline underline-offset-4 decoration-blue-200">라이선스(PLR, MRR)</span> 개념입니다. <br className="hidden md:block" />
-                    누구나 파는 물건이 아닌 <strong className="text-slate-900">'블루오션'</strong>일 때 선점하세요.
+                    누구나 파는 물건이 아닌 <strong className="text-slate-900">&apos;블루오션&apos;</strong>일 때 선점하세요.
                   </p>
 
                   <div className="flex flex-col md:flex-row items-center justify-center gap-4 text-slate-500">
@@ -450,8 +448,8 @@ export default function LandingPage() {
                   마지막 기회 🚀
                 </Badge>
                 <h2 className="text-2xl md:text-4xl font-bold leading-tight">
-                  "남들이 고민하는 지금, <br />
-                  여러분의 수익화가 시작됩니다."
+                  &quot;남들이 고민하는 지금, <br />
+                  여러분의 수익화가 시작됩니다.&quot;
                 </h2>
                 <p className="text-slate-600 md:text-lg max-w-2xl mx-auto leading-relaxed">
                   망설임은 수익화 시점만 늦출 뿐입니다. <br />
