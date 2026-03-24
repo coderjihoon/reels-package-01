@@ -119,6 +119,8 @@ export default function LandingPage() {
           <img
             src="/BARODE_logo_final.png"
             alt="Video PLR 로고"
+            loading="eager"
+            fetchPriority="high"
             className="h-7 md:h-8 w-auto"
           />
         </div>
@@ -164,11 +166,13 @@ export default function LandingPage() {
           <div className="order-1 lg:order-none mt-6 lg:mt-0 w-full lg:w-1/2 flex justify-center lg:justify-end lg:self-start">
             <div className="relative w-full max-w-md aspect-square rounded-3xl overflow-hidden shadow-2xl border-4 border-white transform rotate-2 hover:rotate-0 transition-transform duration-500">
               {/* Using a placeholder image related to video/social media */}
-              <img 
-                src="/hero.png" 
-                alt="영상 편집 패키지 예시" 
-                className="w-full h-full object-cover"
-              />
+                <img 
+                  src="/hero.png" 
+                  alt="영상 편집 패키지 예시" 
+                  loading="eager"
+                  fetchPriority="high"
+                  className="w-full h-full object-cover"
+                />
               <div className="absolute bottom-3 left-6 right-6">
                 <Badge className="bg-white/90 text-blue-700 hover:bg-white px-4 py-2.5 mb-2 backdrop-blur-sm border-none shadow-sm font-bold h-auto">
                   5,000+ 영상 소스
@@ -260,6 +264,7 @@ export default function LandingPage() {
                     <img 
                       src="/solution-image.png" 
                       alt="Solution Illustration" 
+                      loading="lazy"
                       className="w-full h-auto"
                     />
                   </div>
@@ -474,7 +479,7 @@ export default function LandingPage() {
                       { 
                         title: "초특가 할인", 
                         subtitle: "Special Price",
-                        content: "3월 31일 종료 후 정상가(79,000원) 변경 \n현재 30,000원 파격 할인가 적용 중",
+                        content: "런칭기념 할인가 적용 중(30,000원) \n추후 정상가(79,000원)로 인상 예정",
                         icon: Zap,
                         color: "text-yellow-600",
                         bgColor: "bg-yellow-100"
@@ -514,7 +519,7 @@ export default function LandingPage() {
 
               <div className="bg-blue-600 text-white rounded-3xl p-8 md:p-12 text-center space-y-8 shadow-xl shadow-blue-200">
                 <div className="space-y-2">
-                  <h3 className="text-[30px] font-bold leading-tight">
+                  <h3 className="text-[30px] md:text-[36px] font-bold leading-tight">
                     ⏳
                     <br />
                     지금 바로 시작하기
@@ -569,7 +574,7 @@ export default function LandingPage() {
         <div className="hidden lg:block lg:w-1/3 sticky top-24 self-start">
           <div className="bg-white border-2 border-blue-600 rounded-2xl p-6 shadow-xl shadow-blue-900/10">
             <Badge className="bg-red-50 text-red-600 border border-red-200 hover:bg-red-50 w-full justify-center mb-4 text-sm py-3 font-bold animate-pulse">
-              ⏳ 런칭 기념 3/31 한정 특가 마감 임박
+              ⏳ 런칭 기념 한정 특가
             </Badge>
             
             <h3 className="text-xl font-bold text-slate-900 mb-2">
