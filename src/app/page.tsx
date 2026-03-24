@@ -129,7 +129,7 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto p-8 md:p-16 lg:p-24 flex flex-col lg:flex-row items-center justify-between gap-12 relative z-10">
           
           {/* Left Text Area */}
-          <div className="w-full lg:w-1/2 flex flex-col items-start text-left">
+          <div className="order-2 lg:order-none w-full lg:w-1/2 flex flex-col items-start text-left">
             <div className="flex flex-wrap justify-start gap-3 mb-3">
               <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100 px-4 py-1.5 text-sm md:text-base border-none shadow-none">
                 # 얼굴노출 없는
@@ -143,8 +143,14 @@ export default function LandingPage() {
             </div>
 
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight mt-4 mb-6">
-              이 패키지 하나로 <br className="hidden md:block" />
-              <span className="text-blue-600">쇼츠/틱톡/릴스<br />개인 프로젝트</span> <br className="hidden md:block" /> 모두 사용 가능!
+              이 패키지 하나로 <br className="block md:hidden" />
+              <br className="hidden md:block" />
+              <span className="text-blue-600">
+                쇼츠/틱톡/릴스/
+                개인 프로젝트
+              </span>{" "}
+              <br className="hidden md:block" />
+              모두 사용 가능!
             </h1>
             
             <p className="text-xl md:text-2xl text-slate-600 mb-8 font-medium">
@@ -155,7 +161,7 @@ export default function LandingPage() {
           </div>
           
           {/* Right Image Area */}
-          <div className="w-full lg:w-1/2 flex justify-center lg:justify-end">
+          <div className="order-1 lg:order-none mt-6 lg:mt-0 w-full lg:w-1/2 flex justify-center lg:justify-end lg:self-start">
             <div className="relative w-full max-w-md aspect-square rounded-3xl overflow-hidden shadow-2xl border-4 border-white transform rotate-2 hover:rotate-0 transition-transform duration-500">
               {/* Using a placeholder image related to video/social media */}
               <img 
@@ -508,23 +514,25 @@ export default function LandingPage() {
 
               <div className="bg-blue-600 text-white rounded-3xl p-8 md:p-12 text-center space-y-8 shadow-xl shadow-blue-200">
                 <div className="space-y-2">
-                  <h3 className="text-[36px] font-bold leading-tight">
+                  <h3 className="text-[30px] font-bold leading-tight">
                     ⏳
                     <br />
                     지금 바로 시작하기
                   </h3>
                 </div>
 
-                <div className="bg-white/15 border border-white/35 rounded-3xl p-8 md:p-10 flex flex-col items-center text-center gap-8 backdrop-blur-sm max-w-lg mx-auto w-full shadow-2xl">
+                <div className="bg-white/15 border border-white/35 rounded-3xl p-6 sm:p-8 md:p-10 flex flex-col items-center text-center gap-8 backdrop-blur-sm max-w-xl md:max-w-lg mx-auto w-full shadow-2xl">
                   <div className="w-full">
                     <p className="text-white/85 text-sm font-bold mb-2 tracking-widest uppercase">상품명</p>
-                    <p className="text-2xl md:text-3xl font-black whitespace-pre-line">
-                      {"조회수 보장!\n쇼츠/릴스/틱톡 영상 패키지"}
+                    <p className="text-2xl md:text-3xl font-black">
+                      조회수 보장!<br />
+                      쇼츠/릴스/틱톡 영상 <br className="block md:hidden" />
+                      패키지
                     </p>
                   </div>
                   
                   <div className="w-full border-t border-white/30 pt-8">
-                    <div className="w-full max-w-xs mx-auto rounded-2xl px-4 py-5 flex flex-col items-center gap-4">
+                    <div className="w-full max-w-md md:max-w-xs mx-auto rounded-2xl px-4 py-5 flex flex-col items-center gap-4">
                       <div className="w-full space-y-2">
                         <div className="flex items-center justify-between text-sm md:text-base text-white/90">
                           <span>정가</span>
@@ -536,7 +544,7 @@ export default function LandingPage() {
                         </div>
                       </div>
                       <p className="text-white text-sm font-black tracking-[0.16em] uppercase">최종 혜택가</p>
-                      <p className="text-5xl md:text-6xl font-black text-yellow-300">30,000<span className="text-2xl md:text-3xl">원</span></p>
+                      <p className="text-4xl sm:text-5xl md:text-6xl font-black text-yellow-300 whitespace-nowrap tracking-tight">30,000<span className="text-xl sm:text-2xl md:text-3xl">원</span></p>
                       <Badge className="bg-red-500 text-white border-none font-bold text-sm py-1 px-3">62% OFF 적용됨</Badge>
                     </div>
                   </div>
@@ -544,11 +552,11 @@ export default function LandingPage() {
                   <div className="w-full pt-4">
                     <Button 
                       size="lg"
-                      className="w-full bg-white text-blue-600 hover:bg-slate-100 font-black h-auto py-5 px-8 text-2xl rounded-2xl shadow-xl transition-all hover:scale-105 active:scale-95 flex flex-col items-center justify-center gap-1 leading-tight whitespace-normal"
+                      className="w-full bg-white text-blue-600 hover:bg-slate-100 font-black h-auto py-5 px-8 text-xl sm:text-2xl rounded-2xl shadow-xl transition-all hover:scale-105 active:scale-95 flex flex-col items-center justify-center gap-1 leading-tight whitespace-nowrap"
                       onClick={() => setIsPaymentModalOpen(true)}
                     >
                       <span className="text-sm opacity-70 font-bold">지금 바로</span>
-                      <span>결제하고 다운로드</span>
+                      <span className="whitespace-nowrap">결제하고 다운로드</span>
                     </Button>
                   </div>
                 </div>
@@ -613,7 +621,7 @@ export default function LandingPage() {
       {/* Mobile Bottom CTA (Sticky) */}
       <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-4 px-6 z-50 flex items-center justify-between shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.1)] pb-safe">
         <div>
-          <span className="text-xs font-bold text-red-500 block mb-0.5">PLR 구매자 할인가</span>
+          <span className="text-xs font-bold text-red-500 block mb-0.5">최종 할인가</span>
           <div className="text-2xl font-extrabold text-slate-900 leading-none">
             {price.toLocaleString()}<span className="text-sm font-bold text-slate-600 ml-0.5">원</span>
           </div>
@@ -631,16 +639,16 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 text-sm text-slate-500">
             <div>
-              <h4 className="font-bold text-slate-700 mb-4 text-base">Video PLR Package</h4>
-              <p className="mb-1">상호명 : (주)비디오크리에이티브 | 대표 : 김영상</p>
-              <p className="mb-1">사업자등록번호 : 123-45-67890</p>
-              <p className="mb-1">통신판매업신고 : 제 2024-서울강남-1234호</p>
-              <p className="mb-1">주소 : 서울특별시 강남구 테헤란로 123, 4층 401호</p>
+              <h4 className="font-bold text-slate-700 mb-4 text-base">BARODE</h4>
+              <p className="mb-1">상호명 : 바로드</p>
+              <p className="mb-1">대표자 : 김선우</p>
+              <p className="mb-1">사업자등록번호 : 859-20-02000</p>
+              <p className="mb-1">주소 : 경기도 성남시 중원구 은행로38번길 17-12 401호</p>
             </div>
             <div>
               <h4 className="font-bold text-slate-700 mb-4 text-base">고객안내</h4>
-              <p className="mb-1">이메일 : support@videoplr.com (24시간 접수 가능)</p>
-              <p className="mb-1">전화 : 02-1234-5678 (평일 10:00 ~ 17:00 / 점심시간 12:00 ~ 13:00)</p>
+              <p className="mb-1">이메일 : seonwookim95@naver.com</p>
+              <p className="mb-1">전화 : 010-6580-9502</p>
               <p className="mb-4">주말 및 공휴일 휴무</p>
               <div className="flex gap-4 text-xs font-medium text-slate-600">
                 <a href="#" className="hover:text-blue-600 transition-colors">이용약관</a>
@@ -650,8 +658,7 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="border-t border-slate-200 pt-8 text-center text-xs text-slate-400">
-            <p className="mb-2">본 페이지는 기존 구매자 전용 시크릿 혜택 페이지입니다.</p>
-            <p>© {new Date().getFullYear()} Video PLR Package. All rights reserved.</p>
+            <p>© {new Date().getFullYear()} BARODE. All rights reserved.</p>
           </div>
         </div>
       </footer>
