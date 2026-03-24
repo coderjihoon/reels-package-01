@@ -53,8 +53,9 @@ export async function POST(request: Request) {
       // 승인 실패 시 에러 응답
       return NextResponse.json({ success: false, message: data.message, code: data.code }, { status: response.status });
     }
-  } catch (error: any) {
-    console.error("결제 승인 중 오류 발생:", error);
+  } catch (error: unknown) {
+    const err = error as Error;
+    console.error("결제 승인 중 오류 발생:", err);
     return NextResponse.json({ success: false, message: "서버 내부 오류가 발생했습니다." }, { status: 500 });
   }
 }

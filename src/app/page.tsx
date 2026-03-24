@@ -3,44 +3,56 @@
 import { useState, useEffect, useRef } from "react";
 import { loadPaymentWidget, PaymentWidgetInstance } from "@tosspayments/payment-widget-sdk";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { Clock, PlaySquare, TrendingUp, Download, CheckCircle, Youtube, ShieldCheck } from "lucide-react";
+import {
+  Clock,
+  PlaySquare,
+  CheckCircle,
+  Youtube,
+  ShieldCheck,
+  AlertCircle,
+  Check,
+  Zap,
+  Gift,
+  FileVideo,
+  TrendingUp,
+  Share2,
+  RefreshCcw,
+  Layers,
+  ShieldAlert,
+  FileX,
+} from "lucide-react";
 
 export default function LandingPage() {
-  const [timeLeft, setTimeLeft] = useState({ hours: 23, minutes: 59, seconds: 59 });
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [paymentWidget, setPaymentWidget] = useState<PaymentWidgetInstance | null>(null);
   const paymentMethodsWidgetRef = useRef<ReturnType<PaymentWidgetInstance["renderPaymentMethods"]> | null>(null);
-  const [price, setPrice] = useState(50000);
-  const [isCouponApplied, setIsCouponApplied] = useState(false);
+  const price = 26000;
 
   const clientKey = process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY || "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm";
   const customerKey = "lMFsftZj_6_dYqQmAwrGn";
 
+  const [activeTab, setActiveTab] = useState("intro");
+
+  // Intersection Observer for scroll spy
   useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        let { hours, minutes, seconds } = prev;
-        if (seconds > 0) {
-          seconds--;
-        } else {
-          seconds = 59;
-          if (minutes > 0) {
-            minutes--;
-          } else {
-            minutes = 59;
-            if (hours > 0) {
-              hours--;
-            }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveTab(entry.target.id);
           }
-        }
-        return { hours, minutes, seconds };
-      });
-    }, 1000);
-    return () => clearInterval(timer);
+        });
+      },
+      { rootMargin: "-100px 0px -60% 0px", threshold: 0.1 }
+    );
+
+    const sections = document.querySelectorAll("section[id]");
+    sections.forEach((section) => observer.observe(section));
+
+    return () => observer.disconnect();
   }, []);
 
   // 토스 결제위젯 초기화 및 렌더링
@@ -52,7 +64,6 @@ export default function LandingPage() {
         const widget = await loadPaymentWidget(clientKey, customerKey);
         setPaymentWidget(widget);
 
-        // 결제 UI 렌더링
         const paymentMethodsWidget = widget.renderPaymentMethods(
           "#payment-method",
           { value: price },
@@ -60,30 +71,20 @@ export default function LandingPage() {
         );
         paymentMethodsWidgetRef.current = paymentMethodsWidget;
 
-        // 이용약관 UI 렌더링
         widget.renderAgreement("#agreement", { variantKey: "AGREEMENT" });
       } catch (error) {
         console.error("결제 위젯 렌더링 실패:", error);
       }
     })();
-  }, [isPaymentModalOpen]);
-
-  // 쿠폰 적용에 따른 금액 업데이트
-  useEffect(() => {
-    const paymentMethodsWidget = paymentMethodsWidgetRef.current;
-    if (paymentMethodsWidget == null) return;
-
-    const currentPrice = isCouponApplied ? price - 5000 : price;
-    paymentMethodsWidget.updateAmount(currentPrice);
-  }, [price, isCouponApplied]);
+  }, [isPaymentModalOpen, clientKey, price]);
 
   const handlePaymentRequest = async () => {
     try {
       if (!paymentWidget) return;
 
       await paymentWidget.requestPayment({
-        orderId: `order_${Math.random().toString(36).substring(2, 11)}`, // 랜덤 주문번호
-        orderName: "5,000+ 영상 PLR 패키지",
+        orderId: `order_${Math.random().toString(36).substring(2, 11)}`,
+        orderName: "조회수가 보장된 영상 패키지 (구매자 전용)",
         successUrl: window.location.origin + "/success",
         failUrl: window.location.origin + "/fail",
         customerEmail: "customer123@gmail.com",
@@ -95,300 +96,607 @@ export default function LandingPage() {
     }
   };
 
+  const tabs = [
+    { id: "problem", label: "상세설명" },
+    { id: "body", label: "수익구조" },
+    { id: "cta", label: "프리미엄 혜택" },
+  ];
+
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      const offset = 80;
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - offset;
+      window.scrollTo({ top: offsetPosition, behavior: "smooth" });
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-slate-50 font-sans text-slate-900 selection:bg-blue-200">
+    <div className="min-h-screen bg-slate-50 font-sans text-slate-900 pb-24 lg:pb-0">
       
-      {/* --- Section 1: Hero --- */}
-      <section className="relative px-6 py-24 md:py-32 flex flex-col items-center text-center bg-white overflow-hidden">
-        <div className="absolute inset-0 bg-blue-50/50 -z-10 [mask-image:linear-gradient(to_bottom,white,transparent)]"></div>
-        <div className="max-w-4xl mx-auto space-y-8">
-          <div className="flex flex-wrap justify-center gap-2 mb-6">
-            <Badge variant="secondary" className="text-blue-700 bg-blue-100 hover:bg-blue-100 flex items-center gap-1 text-sm py-1 px-3">
-              <ShieldCheck className="w-4 h-4" /> 100% 저작권 프리
-            </Badge>
-            <Badge variant="secondary" className="text-blue-700 bg-blue-100 hover:bg-blue-100 flex items-center gap-1 text-sm py-1 px-3">
-              <TrendingUp className="w-4 h-4" /> PLR/MRR 라이선스 포함
-            </Badge>
-          </div>
-          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-slate-900 leading-tight">
-            얼굴 노출 없이, 저작권 걱정 없이. <br className="hidden md:block"/>
-            <span className="text-blue-600">하루 10분으로 끝내는 숏폼 수익화</span>
-          </h1>
-          <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed">
-            5,000개 이상의 고퀄리티 영상 소스를 내 것처럼 사용하고, <br className="hidden sm:block"/>
-            패키지 자체를 재판매하여 100% 마진을 남기세요.
-          </p>
-          <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Button size="lg" className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white text-lg h-14 px-8 shadow-lg shadow-blue-200" onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })}>
-              [기간 한정] 특가로 구매하기
-            </Button>
-          </div>
-        </div>
-      </section>
+      {/* Top Banner */}
+      <div className="bg-red-600 text-white py-2 px-4 text-center text-xs md:text-sm font-medium sticky top-0 z-50 shadow-sm flex flex-col md:flex-row items-center justify-center gap-1 md:gap-2">
+        <span className="flex items-center gap-1 font-bold">
+          <span className="animate-pulse">🚨</span> (PLR 패키지 구매 고객 전용 할인 페이지)
+        </span>
+        <span className="hidden md:inline">|</span>
+        <span className="opacity-90 font-normal">
+          기존 구매자님들을 위한 특별 할인가가 적용된 페이지입니다.
+        </span>
+      </div>
 
-      {/* --- Section 2: Problem --- */}
-      <section className="px-6 py-20 bg-slate-50">
-        <div className="max-w-3xl mx-auto text-center space-y-10">
-          <h2 className="text-3xl md:text-4xl font-bold">
-            아직도 15초 영상 하나 만들려고 <br className="hidden sm:block"/>
-            <span className="text-blue-600 underline decoration-blue-200 decoration-8 underline-offset-[-4px]">3시간씩 검색</span>하시나요?
-          </h2>
-          <div className="grid gap-4 mt-8">
-            <Card className="border-none shadow-sm bg-white">
-              <CardContent className="p-6 flex items-start gap-4 text-left">
-                <div className="bg-red-50 p-2 rounded-full mt-1">
-                  <Clock className="w-6 h-6 text-red-500" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-lg">무료 소스 찾다가 버리는 아까운 시간</h3>
-                  <p className="text-slate-500 mt-1">픽사베이, 펙셀스... 매일 똑같은 영상을 찾기 위해 낭비되는 시간이 너무 많습니다.</p>
-                </div>
-              </CardContent>
-            </Card>
-            <Card className="border-none shadow-sm bg-white">
-              <CardContent className="p-6 flex items-start gap-4 text-left">
-                <div className="bg-red-50 p-2 rounded-full mt-1">
-                  <ShieldCheck className="w-6 h-6 text-red-500" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-lg">언제 터질지 모르는 저작권 침해 경고</h3>
-                  <p className="text-slate-500 mt-1">무료라고 해서 썼는데, 알고 보니 저작권 문제가 있는 영상이라 채널이 통째로 날아갈까 불안합니다.</p>
-                </div>
-              </CardContent>
-            </Card>
-            <Card className="border-none shadow-sm bg-white">
-              <CardContent className="p-6 flex items-start gap-4 text-left">
-                <div className="bg-red-50 p-2 rounded-full mt-1">
-                  <Youtube className="w-6 h-6 text-red-500" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-lg">조회수는 안 나오고 얼굴 노출은 부담스러운 현실</h3>
-                  <p className="text-slate-500 mt-1">얼굴을 드러내지 않으면 콘텐츠 퀄리티를 높이기 어려워 수익화의 벽에 부딪힙니다.</p>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* --- Section 3: Solution & Concept --- */}
-      <section className="px-6 py-24 bg-blue-900 text-white">
-        <div className="max-w-4xl mx-auto text-center space-y-12">
-          <h2 className="text-3xl md:text-5xl font-bold leading-tight">
-            영상을 올리는 것만으로 끝이 아닙니다. <br />
-            이제 <span className="text-blue-300">"판매자"</span>가 되세요.
-          </h2>
-          <p className="text-blue-100 text-lg md:text-xl">
-            단순한 영상 제공을 넘어, 당신에게 마스터 권한을 드립니다.
-          </p>
-          <div className="grid md:grid-cols-2 gap-8 text-left mt-12">
-            <div className="bg-blue-800/50 p-8 rounded-2xl border border-blue-700/50 backdrop-blur-sm">
-              <h3 className="text-2xl font-bold text-blue-200 flex items-center gap-2 mb-4">
-                <PlaySquare className="w-6 h-6" /> PLR
-                <span className="text-sm font-normal text-blue-300 ml-2">(Private Label Rights)</span>
-              </h3>
-              <p className="text-blue-50 leading-relaxed">
-                제공된 5,000+ 영상을 <strong className="text-white">자유롭게 편집하고 내 채널에 업로드</strong>하여 쇼츠, 릴스, 틱톡에서 광고 수익 및 스폰서십 수익을 창출할 수 있는 권리입니다.
-              </p>
+      <div className="w-full bg-white border-b border-slate-200 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-white pointer-events-none"></div>
+        {/* Hero Section */}
+        <div className="max-w-6xl mx-auto p-8 md:p-16 lg:p-24 flex flex-col lg:flex-row items-center justify-between gap-12 relative z-10">
+          
+          {/* Left Text Area */}
+          <div className="w-full lg:w-1/2 flex flex-col items-start text-left">
+            <div className="flex flex-wrap justify-start gap-3 mb-3">
+              <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100 px-4 py-1.5 text-sm md:text-base border-none shadow-none">
+                # 얼굴노출 없는
+              </Badge>
+              <Badge className="bg-slate-100 text-slate-700 hover:bg-slate-100 px-4 py-1.5 text-sm md:text-base border-none shadow-none">
+                # 100% 저작권 프리
+              </Badge>
+              <Badge className="bg-orange-100 text-orange-700 hover:bg-orange-100 px-4 py-1.5 text-sm md:text-base border-none shadow-none">
+                # 재판매 권한(MRR) 포함
+              </Badge>
             </div>
-            <div className="bg-blue-800/50 p-8 rounded-2xl border border-blue-700/50 backdrop-blur-sm">
-              <h3 className="text-2xl font-bold text-blue-200 flex items-center gap-2 mb-4">
-                <TrendingUp className="w-6 h-6" /> MRR
-                <span className="text-sm font-normal text-blue-300 ml-2">(Master Resell Rights)</span>
-              </h3>
-              <p className="text-blue-50 leading-relaxed">
-                이 영상 패키지 자체를 다른 사람에게 <strong className="text-white">당신의 마진 100%로 다시 판매</strong>할 수 있는 마스터 권한입니다. 판매금 전액이 당신의 계좌로 입금됩니다.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
 
-      {/* --- Section 4: Features --- */}
-      <section className="px-6 py-24 bg-white">
-        <div className="max-w-5xl mx-auto text-center space-y-12">
-          <div className="space-y-4">
-            <h2 className="text-3xl md:text-4xl font-bold">단 한 번의 결제로 얻게 되는 <br className="sm:hidden" /> 압도적 스케일</h2>
-            <p className="text-slate-600 text-lg">5,000개가 넘는 영상이 꼼꼼하게 분류되어 있습니다.</p>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight mt-4 mb-6">
+              이 패키지 하나로 <br className="hidden md:block" />
+              <span className="text-blue-600">쇼츠/틱톡/릴스<br />개인 프로젝트</span> <br className="hidden md:block" /> 모두 사용 가능!
+            </h1>
+            
+            <p className="text-xl md:text-2xl text-slate-600 mb-8 font-medium">
+              요즘 많은 사람들이 하는 영상 부업. <br />
+              조회수가 보장된 영상들로 남들보다 <br />
+              한발 앞서가세요.
+            </p>
           </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {['🌿 자연/풍경', '💼 비즈니스/오피스', '☕ 라이프스타일', '🔥 동기부여/명언', '✈️ 여행/도시', '🏃 피트니스/건강', '🐶 동물/펫', '✨ 감성/추상'].map((category, i) => (
-              <Card key={i} className="bg-slate-50 border-none shadow-sm hover:shadow-md transition-shadow">
-                <CardContent className="p-6 flex flex-col items-center justify-center text-center h-full">
-                  <span className="font-semibold text-slate-800">{category}</span>
-                </CardContent>
-              </Card>
+          {/* Right Image Area */}
+          <div className="w-full lg:w-1/2 flex justify-center lg:justify-end">
+            <div className="relative w-full max-w-md aspect-square rounded-3xl overflow-hidden shadow-2xl border-4 border-white transform rotate-2 hover:rotate-0 transition-transform duration-500">
+              {/* Using a placeholder image related to video/social media */}
+              <img 
+                src="/hero.png" 
+                alt="영상 편집 패키지 예시" 
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute bottom-3 left-6 right-6">
+                <Badge className="bg-white/90 text-blue-700 hover:bg-white px-4 py-2.5 mb-2 backdrop-blur-sm border-none shadow-sm font-bold h-auto">
+                  5,000+ 영상 소스
+                </Badge>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div className="max-w-6xl mx-auto px-4 py-8 lg:flex lg:gap-8 lg:items-start">
+        
+        {/* Left Content Area (Main) */}
+        <div className="lg:w-2/3 w-full">
+
+          {/* Sticky Tab Navigation */}
+          <div className="sticky top-[36px] md:top-[40px] z-40 bg-white border border-slate-200 flex overflow-x-auto scrollbar-hide shadow-sm">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => scrollToSection(tab.id)}
+                className={`flex-1 min-w-[80px] py-4 text-sm md:text-base font-bold text-center border-b-2 transition-colors whitespace-nowrap px-4 ${
+                  activeTab === tab.id
+                    ? "border-blue-600 text-blue-600 bg-blue-50/30"
+                    : "border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50"
+                }`}
+              >
+                {tab.label}
+              </button>
             ))}
           </div>
 
-          <div className="mt-12 bg-blue-50 border border-blue-100 rounded-2xl p-8 max-w-2xl mx-auto">
-            <h3 className="text-xl font-bold text-blue-900 mb-2">🎁 구매자 한정 특별 혜택</h3>
-            <p className="text-blue-700 mb-6">어떻게 시작해야 할지 막막하신가요? 구매자 전원에게 <strong>1:1 수익화 가이드</strong>를 제공합니다.</p>
-            <Button variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-50">1:1 상담 혜택 자세히 보기</Button>
-          </div>
-        </div>
-      </section>
+          {/* Content Sections */}
+          <div className="bg-white border-b border-x border-slate-200 rounded-b-2xl p-6 md:p-10 space-y-24 shadow-sm">
 
-      {/* --- Section 5: Process --- */}
-      <section className="px-6 py-24 bg-slate-50 border-t border-slate-100">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">이렇게 활용하세요</h2>
-            <p className="text-slate-600 text-lg">결제부터 수익 창출까지, 단 3단계면 충분합니다.</p>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-8 relative">
-            <div className="hidden md:block absolute top-1/2 left-0 w-full h-0.5 bg-slate-200 -translate-y-1/2 z-0"></div>
-            
-            <div className="relative z-10 flex flex-col items-center text-center bg-slate-50 pt-4">
-              <div className="w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center text-2xl font-bold mb-6 shadow-lg shadow-blue-200 ring-8 ring-slate-50">1</div>
-              <h3 className="text-xl font-bold mb-2">다운로드</h3>
-              <p className="text-slate-600">결제 즉시 5,000+ 영상 소스 원본 접근 권한을 획득합니다.</p>
-            </div>
-            
-            <div className="relative z-10 flex flex-col items-center text-center bg-slate-50 pt-4">
-              <div className="w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center text-2xl font-bold mb-6 shadow-lg shadow-blue-200 ring-8 ring-slate-50">2</div>
-              <h3 className="text-xl font-bold mb-2">콘텐츠 업로드</h3>
-              <p className="text-slate-600">내 입맛대로 편집하여 유튜브/틱톡/인스타그램에 업로드하고 트래픽을 확보합니다.</p>
-            </div>
-            
-            <div className="relative z-10 flex flex-col items-center text-center bg-slate-50 pt-4">
-              <div className="w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center text-2xl font-bold mb-6 shadow-lg shadow-blue-200 ring-8 ring-slate-50">3</div>
-              <h3 className="text-xl font-bold mb-2">재판매 셋업</h3>
-              <p className="text-slate-600">제공된 가이드를 따라 패키지 자체를 판매하여 추가 수익(100% 마진)을 창출합니다.</p>
-            </div>
-          </div>
-        </div>
-      </section>
+            {/* Section: Problem & Agitation */}
+            <section id="problem" className="scroll-mt-32 space-y-10 pt-10 md:pt-16">
+              <div className="text-center space-y-4">
+                <span className="inline-block bg-blue-50 text-blue-600 border border-blue-200 font-bold tracking-wider text-sm px-3 py-1 rounded-full">PROBLEM</span>
+                <h2 className="text-2xl md:text-4xl font-bold leading-tight">
+                  남들 다 하는 쇼츠 부업,<br />
+                  <span className="text-slate-500">왜 나만 제자리일까요?</span>
+                </h2>
+              </div>
+              
+              <div className="grid gap-4 mt-8">
+                {[
+                  { text: "영상 하나 만들 때마다 쓸만한 소스 찾느라 버리는 수 시간", icon: Clock },
+                  { text: "무료 영상의 낮은 퀄리티와 늘 불안한 저작권 문제", icon: ShieldAlert },
+                  { text: "내 프로젝트에 딱 맞는 '감도 높은' 영상의 부재", icon: FileX }
+                ].map((item, i) => (
+                  <div key={i} className="flex items-center gap-4 bg-slate-50 p-6 rounded-xl border border-slate-100">
+                    <div className="bg-red-50 p-2 rounded-full shrink-0">
+                      <item.icon className="w-5 h-5 text-red-500" />
+                    </div>
+                    <p className="text-slate-700 font-medium md:text-lg leading-relaxed">{item.text}</p>
+                  </div>
+                ))}
+              </div>
 
-      {/* --- Section 6: FAQ --- */}
-      <section className="px-6 py-24 bg-white">
-        <div className="max-w-3xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12">자주 묻는 질문</h2>
-          <Accordion className="w-full">
-            <AccordionItem value="item-1">
-              <AccordionTrigger className="text-left text-lg font-semibold">진짜로 제가 다시 팔아도 되나요?</AccordionTrigger>
-              <AccordionContent className="text-slate-600 text-base leading-relaxed">
-                네, 그렇습니다! 본 패키지에는 MRR(Master Resell Rights) 라이선스가 포함되어 있어, 구매하신 후 원하시는 가격에 재판매가 가능하며 수익의 100%를 가져가실 수 있습니다.
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="item-2">
-              <AccordionTrigger className="text-left text-lg font-semibold">유튜브 수익 창출 승인에 문제가 없나요?</AccordionTrigger>
-              <AccordionContent className="text-slate-600 text-base leading-relaxed">
-                제공해 드리는 영상은 100% 저작권 프리 소스입니다. 다만 유튜브 정책상 '재사용된 콘텐츠'로 분류되지 않기 위해 음악, 자막, 더빙 등 본인만의 가치를 약간 더해 편집하시는 것을 권장합니다. 이에 대한 노하우도 가이드에서 제공해 드립니다.
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="item-3">
-              <AccordionTrigger className="text-left text-lg font-semibold">초보자도 할 수 있나요? 영상 편집을 한 번도 안 해봤어요.</AccordionTrigger>
-              <AccordionContent className="text-slate-600 text-base leading-relaxed">
-                물론입니다! 스마트폰 무료 앱(CapCut, VLLO 등)으로 몇 번의 터치만으로 완성할 수 있습니다. 어떻게 시작해야 할지 모르는 분들을 위해 구매자 한정 1:1 수익화 가이드 상담을 지원해 드리고 있으니 걱정하지 않으셔도 됩니다.
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-        </div>
-      </section>
+              <div className="bg-blue-50 border border-blue-100 rounded-xl p-6 text-center">
+                <p className="text-blue-900 font-bold text-lg md:text-xl">
+                  이제 찾지 말고, <br className="md:hidden" />
+                  <span className="text-blue-600">5,000개 이상의 퀄리티 높은 영상</span>을 받아보세요.
+                </p>
+              </div>
+            </section>
 
-      {/* --- Section 7: Final CTA (Pricing) --- */}
-      <section id="pricing" className="px-6 py-24 bg-blue-50 border-t border-blue-100">
-        <div className="max-w-3xl mx-auto text-center space-y-8">
-          <h2 className="text-3xl md:text-5xl font-bold text-slate-900 leading-tight">
-            지금 바로 당신만의 <br className="hidden sm:block"/>
-            <span className="text-blue-600">자동화 수익 파이프라인</span>을 구축하세요
-          </h2>
-          
-          <div className="bg-white p-8 md:p-12 rounded-3xl shadow-xl shadow-blue-900/5 border border-blue-100 relative overflow-hidden">
-            <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-blue-400 to-blue-600"></div>
-            
-            <div className="flex flex-col items-center mb-8">
-              <span className="text-sm font-bold tracking-wider text-red-500 bg-red-50 px-4 py-1.5 rounded-full mb-4 animate-pulse">
-                ⏳ 3/31 한정 특가 마감까지
-              </span>
-              <div className="flex gap-4 text-3xl md:text-4xl font-mono font-bold text-slate-800">
-                <div className="flex flex-col items-center">
-                  <span className="bg-slate-100 px-3 py-2 rounded-lg min-w-[70px]">{String(timeLeft.hours).padStart(2, '0')}</span>
-                  <span className="text-xs text-slate-400 mt-2 font-sans font-medium">시간</span>
+            <hr className="border-slate-100" />
+
+            {/* Section: Solution */}
+            <section id="solution" className="scroll-mt-32 space-y-12">
+              <div className="text-center space-y-4">
+                <span className="inline-block bg-blue-50 text-blue-600 border border-blue-200 font-bold tracking-wider text-sm px-3 py-1 rounded-full">SOLUTION</span>
+                <h2 className="text-2xl md:text-4xl font-bold leading-tight">
+                  얼굴 노출 없이, 저작권 걱정 없이.<br />
+                  <span className="text-blue-600">이 패키지 하나로 <br />쇼츠/릴스/틱톡 평생 해결</span>
+                </h2>
+              </div>
+
+              <div className="relative">
+                <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-2xl blur opacity-10"></div>
+                <div className="relative bg-white border border-blue-100 p-8 rounded-2xl shadow-sm text-center overflow-hidden">
+                  <div className="mb-8 overflow-hidden max-w-md mx-auto">
+                    <img 
+                      src="/solution-image.png" 
+                      alt="Solution Illustration" 
+                      className="w-full h-auto"
+                    />
+                  </div>
+                  <p className="text-lg md:text-xl text-slate-700 font-medium leading-relaxed">
+                    조회수가 보장된 <span className="text-blue-600 font-bold">고퀄리티 영상 소스들</span>로 <br className="hidden md:block" />
+                    남들보다 <span className="bg-yellow-100 px-1 font-bold text-slate-900">10배 빠르게</span> 앞서가세요.
+                  </p>
                 </div>
-                <span className="mt-2">:</span>
-                <div className="flex flex-col items-center">
-                  <span className="bg-slate-100 px-3 py-2 rounded-lg min-w-[70px]">{String(timeLeft.minutes).padStart(2, '0')}</span>
-                  <span className="text-xs text-slate-400 mt-2 font-sans font-medium">분</span>
+              </div>
+            </section>
+
+            <hr className="border-slate-100" />
+
+            {/* Section: Body (Profit & Composition) */}
+            <section id="body" className="scroll-mt-32 space-y-16">
+              <div className="text-center space-y-4">
+                <span className="inline-block bg-blue-50 text-blue-600 border border-blue-200 font-bold tracking-wider text-sm px-3 py-1 rounded-full">BODY</span>
+                <h2 className="text-2xl md:text-4xl font-bold leading-tight">
+                  어떻게 수익을 내나요?
+                </h2>
+              </div>
+
+              <div className="space-y-16">
+                {/* 01. Revenue Models */}
+                <div className="space-y-8">
+                  <h3 className="text-xl md:text-2xl font-bold flex items-center gap-3">
+                    <span className="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm leading-none shrink-0">01</span>
+                    이 패키지로 만드는 3가지 수익 모델
+                  </h3>
+                  
+                  <div className="grid gap-6 md:grid-cols-3">
+                    {[
+                      { 
+                        title: "채널 성장", 
+                        desc: "단순 업로드만으로 조회수 폭발! 광고 수익(AdSense) 창출",
+                        icon: TrendingUp
+                      },
+                      { 
+                        title: "콘텐츠 활용", 
+                        desc: "저작권 프리 소스로 개인 프로젝트 및 기업 SNS 대행 활용",
+                        icon: Share2
+                      },
+                      { 
+                        title: "권한 재판매 (PLR/MRR)", 
+                        desc: "패키지 전체를 내 이름으로 재판매하여 판매 수익 100% 소유",
+                        icon: RefreshCcw
+                      }
+                    ].map((item, i) => (
+                      <div key={i} className="bg-white border border-slate-100 p-8 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+                        <div className="bg-blue-50 w-12 h-12 rounded-xl flex items-center justify-center mb-6">
+                          <item.icon className="w-6 h-6 text-blue-600" />
+                        </div>
+                        <h4 className="text-lg font-bold mb-3">{item.title}</h4>
+                        <p className="text-slate-600 text-sm leading-relaxed">{item.desc}</p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <span className="mt-2">:</span>
-                <div className="flex flex-col items-center">
-                  <span className="bg-slate-100 px-3 py-2 rounded-lg min-w-[70px]">{String(timeLeft.seconds).padStart(2, '0')}</span>
-                  <span className="text-xs text-slate-400 mt-2 font-sans font-medium">초</span>
+
+                {/* 02. Composition */}
+                <div className="space-y-8">
+                  <h3 className="text-xl md:text-2xl font-bold flex items-center gap-3">
+                    <span className="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm leading-none shrink-0">02</span>
+                    압도적인 구성 (5,000+ Clips)
+                  </h3>
+                  
+                  <div className="bg-slate-900 text-white rounded-3xl p-8 md:p-12 overflow-hidden relative">
+                    <div className="absolute top-0 right-0 p-8 opacity-5">
+                      <Layers className="w-48 h-48" />
+                    </div>
+                    
+                    <div className="relative z-10 grid gap-8 md:grid-cols-2 lg:items-center">
+                      <div className="space-y-6">
+                        <p className="text-blue-400 font-bold tracking-wide">CATEGORIES</p>
+                        <div className="flex flex-wrap gap-2">
+                          {['자기계발', '럭셔리', '동기부여', 'AI ASMR', '애니메이션', '그래픽', '동물', '해외 밈', '시티뷰', '여행'].map((cat, i) => (
+                            <span key={i} className="bg-white/10 border border-white/10 px-4 py-2 rounded-xl text-sm font-medium">
+                              {cat}
+                            </span>
+                          ))}
+                          <span className="bg-blue-600 px-4 py-2 rounded-xl text-sm font-bold">+ 5000...</span>
+                        </div>
+                      </div>
+                      
+                      <div className="bg-blue-600/10 border border-blue-500/20 p-8 rounded-2xl">
+                        <p className="text-xl font-bold mb-4 leading-relaxed text-blue-400">
+                          수익화에 최적화된 <br />
+                          수백 가지 카테고리의 <br />
+                          <span className="text-white">풀 패키지 구성</span>
+                        </p>
+                        <p className="text-slate-400 text-sm">
+                          모든 영상은 SNS 환경에 최적화된 세로형(9:16) 고품질 소스로 구성되어 있습니다.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <hr className="border-slate-100" />
+
+            {/* Section: Advantage (Social Proof) */}
+            <section id="advantage" className="scroll-mt-32 space-y-12">
+              <div className="text-center space-y-4">
+                <span className="inline-block bg-blue-50 text-blue-600 border border-blue-200 font-bold tracking-wider text-sm px-3 py-1 rounded-full">ADVANTAGE</span>
+                <h2 className="text-2xl md:text-4xl font-bold leading-tight">
+                  이미 해외 셀러들은 이 방식으로<br />
+                  <span className="text-blue-600">월 수천 달러를 벌고 있습니다.</span>
+                </h2>
+              </div>
+
+              <div className="bg-gradient-to-br from-slate-50 to-white border border-slate-200 rounded-3xl p-8 md:p-12 shadow-sm relative overflow-hidden">
+                <div className="absolute -right-8 -bottom-8 opacity-[0.03] rotate-12">
+                  <TrendingUp className="w-64 h-64" />
+                </div>
+
+                <div className="relative z-10 space-y-8 max-w-3xl mx-auto text-center">
+                  <p className="text-lg md:text-xl text-slate-700 leading-relaxed font-medium">
+                    한국에선 아직 생소한 <span className="text-blue-600 font-bold underline underline-offset-4 decoration-blue-200">라이선스(PLR, MRR)</span> 개념입니다. <br className="hidden md:block" />
+                    누구나 파는 물건이 아닌 <strong className="text-slate-900">'블루오션'</strong>일 때 선점하세요.
+                  </p>
+
+                  <div className="flex flex-col md:flex-row items-center justify-center gap-4 text-slate-500">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="w-5 h-5 text-green-500" />
+                      <span>희소성 있는 고퀄리티 소스</span>
+                    </div>
+                    <div className="hidden md:block w-1 h-1 bg-slate-300 rounded-full"></div>
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="w-5 h-5 text-green-500" />
+                      <span>세팅만으로 자동 수익화 실현</span>
+                    </div>
+                  </div>
+
+                  <div className="pt-4">
+                    <div className="inline-block bg-white px-6 py-3 rounded-2xl border border-blue-100 shadow-sm">
+                      <p className="text-blue-700 font-bold">
+                        전 세계에서 유행하는 이 수익구조, 지금 바로 시작하세요.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <hr className="border-slate-100" />
+
+            {/* Section: Target & Benefit */}
+            <section id="target" className="scroll-mt-32 space-y-12">
+              <div className="text-center space-y-4">
+                <span className="inline-block bg-blue-50 text-blue-600 border border-blue-200 font-bold tracking-wider text-sm px-3 py-1 rounded-full">TARGET & BENEFIT</span>
+                <h2 className="text-2xl md:text-4xl font-bold leading-tight">
+                  이런 분들께 추천드립니다.
+                </h2>
+              </div>
+
+              <div className="flex flex-col gap-6 max-w-3xl mx-auto">
+                <div className="bg-slate-50 border border-slate-200 rounded-3xl p-8 space-y-6">
+                  <ul className="space-y-4">
+                    {[
+                      "얼굴 노출 없이 SNS 수익을 만들고 싶은 분",
+                      "영상 소스 찾는 시간에 진을 다 빼는 영상 편집자",
+                      "고퀄리티 콘텐츠를 만들고 싶지만 제작 능력이 부족한 분"
+                    ].map((text, i) => (
+                      <li key={i} className="flex items-start gap-3 text-slate-700 font-medium">
+                        <CheckCircle className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
+                        <span>{text}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="bg-blue-600 text-white rounded-3xl p-8 space-y-6 shadow-lg shadow-blue-200 relative overflow-hidden">
+                  <div className="absolute top-0 right-0 p-4 opacity-10">
+                    <Gift className="w-24 h-24" />
+                  </div>
+                  <Badge className="bg-yellow-400 text-yellow-900 font-extrabold hover:bg-yellow-400 border-none px-3 py-1">독점 혜택</Badge>
+                  <div className="space-y-2">
+                    <h3 className="text-2xl font-bold leading-tight">
+                      구매자 한정<br />
+                      '1:1 수익화 가이드 상담'<br />
+                      <span className="text-yellow-300">(이메일 무제한)</span>
+                    </h3>
+                  </div>
+                  <p className="text-blue-100 text-sm leading-relaxed">
+                    콘텐츠 활용법부터 수익화 노하우까지 <br />
+                    밀착 케어해 드립니다. 처음이라도 걱정 마세요!
+                  </p>
+                </div>
+              </div>
+            </section>
+
+            <hr className="border-slate-100" />
+
+            {/* Section: Final CTA */}
+            <section id="cta" className="scroll-mt-32 space-y-12">
+              <div className="text-center space-y-6">
+                <Badge className="bg-blue-600 text-white border-none px-4 h-auto py-2.5 text-sm font-bold animate-bounce my-4">
+                  마지막 기회 🚀
+                </Badge>
+                <h2 className="text-2xl md:text-4xl font-bold leading-tight">
+                  "남들이 고민하는 지금, <br />
+                  여러분의 수익화가 시작됩니다."
+                </h2>
+                <p className="text-slate-600 md:text-lg max-w-2xl mx-auto leading-relaxed">
+                  망설임은 수익화 시점만 늦출 뿐입니다. <br />
+                  <span className="font-bold text-slate-900">5,000+개의 검증된 영상 소스</span>로 오늘부터 수익화를 시작하세요.
+                </p>
+              </div>
+
+              <div className="bg-gradient-to-br from-slate-900 to-blue-950 rounded-3xl p-8 md:p-12 lg:p-16 border border-slate-800 shadow-2xl text-white relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/20 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
+                <div className="relative z-10">
+                  <div className="flex justify-center mb-6">
+                    <Badge className="bg-blue-600/30 text-blue-200 border border-blue-500/30 px-4 py-1.5 text-sm font-bold tracking-widest">
+                      PREMIUM BENEFITS
+                    </Badge>
+                  </div>
+                  <h3 className="text-3xl md:text-4xl font-extrabold mb-12 text-center flex items-center justify-center gap-3">
+                    <span>
+                      구매자 한정
+                      <br />
+                      프리미엄 혜택 3가지
+                    </span>
+                  </h3>
+                  <div className="flex flex-col gap-6 lg:gap-8 max-w-3xl mx-auto">
+                    {[
+                      { 
+                        title: "초특가 할인", 
+                        subtitle: "Special Price",
+                        content: "3월 31일 종료 후 정상가(79,000원) 변경 \n현재 26,000원 파격 할인가 적용 중",
+                        icon: Zap,
+                        color: "text-yellow-600",
+                        bgColor: "bg-yellow-100"
+                      },
+                      { 
+                        title: "재판매 권한", 
+                        subtitle: "MRR Rights",
+                        content: "수정, 상업적 이용 가능 \n패키지 통째로 재판매 권한 즉시 부여",
+                        icon: ShieldCheck,
+                        color: "text-blue-600",
+                        bgColor: "bg-blue-100"
+                      },
+                      { 
+                        title: "1:1 밀착 케어", 
+                        subtitle: "Unlimited Care",
+                        content: "막막함 제로! \n1:1 수익화 가이드 이메일 상담 무제한 제공",
+                        icon: CheckCircle,
+                        color: "text-emerald-600",
+                        bgColor: "bg-emerald-100"
+                      }
+                    ].map((item, i) => (
+                      <div
+                        key={i}
+                        className="bg-white text-slate-900 p-7 md:p-8 rounded-2xl shadow-xl border border-white/60 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl flex flex-col items-start text-left"
+                      >
+                        <div className={`w-14 h-14 rounded-2xl ${item.bgColor} ${item.color} flex items-center justify-center mb-5`}>
+                          <item.icon className="w-8 h-8" />
+                        </div>
+                        <div className="text-blue-600 font-black text-xs mb-2 tracking-[0.18em] uppercase">{item.subtitle}</div>
+                        <h4 className="text-xl md:text-2xl font-bold mb-3">{item.title}</h4>
+                        <p className="text-slate-600 text-[15px] md:text-base leading-relaxed font-medium whitespace-pre-line">{item.content}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-blue-600 text-white rounded-3xl p-8 md:p-12 text-center space-y-8 shadow-xl shadow-blue-200">
+                <div className="space-y-2">
+                  <h3 className="text-[36px] font-bold leading-tight">
+                    ⏳
+                    <br />
+                    지금 바로 시작하기
+                  </h3>
+                  <p className="text-blue-100 text-sm opacity-90">현재 접속하신 페이지는 'PLR 패키지 구매 고객' 전용 시크릿 할인 페이지입니다.</p>
+                </div>
+
+                <div className="bg-white/15 border border-white/35 rounded-3xl p-8 md:p-10 flex flex-col items-center text-center gap-8 backdrop-blur-sm max-w-lg mx-auto w-full shadow-2xl">
+                  <div className="w-full">
+                    <p className="text-white/85 text-sm font-bold mb-2 tracking-widest uppercase">상품명</p>
+                    <p className="text-2xl md:text-3xl font-black">영상 부업 올인원 패키지</p>
+                  </div>
+                  
+                  <div className="w-full border-t border-white/10 pt-8">
+                    <div className="w-full max-w-xs mx-auto rounded-2xl px-4 py-5 flex flex-col items-center gap-4">
+                      <div className="w-full space-y-2">
+                        <div className="flex items-center justify-between text-sm md:text-base text-white/90">
+                          <span>정가</span>
+                          <span className="line-through decoration-white/70">79,000원</span>
+                        </div>
+                        <div className="flex items-center justify-between text-sm md:text-base text-white">
+                          <span>일반 할인가</span>
+                          <span className="font-semibold">32,000원</span>
+                        </div>
+                      </div>
+                      <p className="text-white text-sm font-black tracking-[0.16em] uppercase">최종 혜택가</p>
+                      <p className="text-5xl md:text-6xl font-black text-yellow-300">26,000<span className="text-2xl md:text-3xl">원</span></p>
+                      <Badge className="bg-red-500 text-white border-none font-bold text-sm py-1 px-3">70% OFF 적용됨</Badge>
+                    </div>
+                  </div>
+
+                  <div className="w-full pt-4">
+                    <Button 
+                      size="lg"
+                      className="w-full bg-white text-blue-600 hover:bg-slate-100 font-black h-auto py-5 px-8 text-2xl rounded-2xl shadow-xl transition-all hover:scale-105 active:scale-95 flex flex-col items-center justify-center gap-1 leading-tight whitespace-normal"
+                      onClick={() => setIsPaymentModalOpen(true)}
+                    >
+                      <span className="text-sm opacity-70 font-bold">지금 바로</span>
+                      <span>결제하고 다운로드</span>
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </section>
+            </div>
+            </div>
+
+            {/* Right Sidebar (Floating Payment Box) */}
+        <div className="hidden lg:block lg:w-1/3 sticky top-24 self-start">
+          <div className="bg-white border-2 border-blue-600 rounded-2xl p-6 shadow-xl shadow-blue-900/10">
+            <Badge className="bg-red-50 text-red-600 border border-red-200 hover:bg-red-50 w-full justify-center mb-4 text-sm py-3 font-bold animate-pulse">
+              ⏳ 런칭 기념 3/31 한정 특가 마감 임박
+            </Badge>
+            
+            <h3 className="text-xl font-bold text-slate-900 mb-2">
+              조회수 보장!<br />
+              쇼츠/릴스/틱톡 영상 패키지
+            </h3>
+            <p className="text-sm text-slate-500 mb-4 pb-4 border-b border-slate-100">
+              초보자도 가능한 자동화 수익 파이프라인
+            </p>
+
+            <div className="space-y-4 mb-6">
+              <div className="flex justify-between text-sm text-slate-600">
+                <span>정가</span>
+                <span className="line-through">79,000원</span>
+              </div>
+              <div className="flex justify-between text-sm text-slate-600">
+                <span>일반 할인가</span>
+                <span>32,000원</span>
+              </div>
+              <div className="flex justify-between items-center pt-2">
+                <span className="font-bold text-slate-900">PLR 구매자 할인가</span>
+                <div className="text-right">
+                  <div className="text-3xl font-extrabold text-blue-600">{price.toLocaleString()}<span className="text-xl">원</span></div>
                 </div>
               </div>
             </div>
 
-            <div className="space-y-2 mb-8">
-              <p className="text-slate-400 line-through text-lg">정가 50,000원</p>
-              <div className="text-5xl font-extrabold text-slate-900">
-                45,000<span className="text-2xl font-bold text-slate-500">원</span>
-              </div>
-              <p className="text-orange-500 font-semibold mt-2 flex items-center justify-center gap-1">
-                ✨ 기존 구매자 전용 특별 추가 할인 혜택 적용 중!
-              </p>
-            </div>
+            <ul className="space-y-3 mb-8 text-sm text-slate-700 bg-slate-50 p-4 rounded-xl">
+              <li className="flex gap-2 items-start"><Check className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" /> 5,000개 이상의 원본 영상 소스</li>
+              <li className="flex gap-2 items-start"><Check className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" /> 평생 소장 및 무제한 사용 권한</li>
+              <li className="flex gap-2 items-start"><Check className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" /> 수정, 상업적 이용 (PLR)</li>
+              <li className="flex gap-2 items-start font-bold text-slate-900"><Check className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" /> 패키지 100% 마진 재판매 권한 (MRR)</li>
+              <li className="flex gap-2 items-start text-orange-600 font-bold"><Gift className="w-4 h-4 text-orange-600 shrink-0 mt-0.5" /> 1:1 수익화 가이드 무제한 제공</li>
+            </ul>
 
-            {/* 결제 모달 열기 버튼 */}
             <Button 
               size="lg" 
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white text-lg h-16 rounded-xl shadow-lg shadow-blue-200 flex items-center justify-center gap-2 group"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold h-14 text-lg shadow-md"
               onClick={() => setIsPaymentModalOpen(true)}
             >
-              <Download className="w-5 h-5 group-hover:-translate-y-1 transition-transform" />
-              지금 바로 5,000개 영상 팩 다운로드하기
+              즉시 구매하기
             </Button>
-            <p className="text-xs text-slate-500 mt-4 flex items-center justify-center gap-1">
-              <CheckCircle className="w-3 h-3" /> 결제 즉시 이메일로 다운로드 링크가 발송됩니다.
-            </p>
+            <p className="text-xs text-center text-slate-400 mt-3">결제 완료 즉시 파일을 다운로드 할 수 있습니다.</p>
           </div>
         </div>
-      </section>
+
+      </div>
+
+      {/* Mobile Bottom CTA (Sticky) */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-4 px-6 z-50 flex items-center justify-between shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.1)] pb-safe">
+        <div>
+          <span className="text-xs font-bold text-red-500 block mb-0.5">PLR 구매자 할인가</span>
+          <div className="text-2xl font-extrabold text-slate-900 leading-none">
+            {price.toLocaleString()}<span className="text-sm font-bold text-slate-600 ml-0.5">원</span>
+          </div>
+        </div>
+        <Button 
+          className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-8 h-12 rounded-xl"
+          onClick={() => setIsPaymentModalOpen(true)}
+        >
+          결제하기
+        </Button>
+      </div>
 
       {/* Footer */}
-      <footer className="py-8 text-center text-slate-500 text-sm bg-white border-t border-slate-100">
-        <p>© 2024 Video PLR Package. All rights reserved.</p>
+      <footer className="bg-slate-100 border-t border-slate-200 mt-12 pb-32 lg:pb-12 pt-12">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 text-sm text-slate-500">
+            <div>
+              <h4 className="font-bold text-slate-700 mb-4 text-base">Video PLR Package</h4>
+              <p className="mb-1">상호명 : (주)비디오크리에이티브 | 대표 : 김영상</p>
+              <p className="mb-1">사업자등록번호 : 123-45-67890</p>
+              <p className="mb-1">통신판매업신고 : 제 2024-서울강남-1234호</p>
+              <p className="mb-1">주소 : 서울특별시 강남구 테헤란로 123, 4층 401호</p>
+            </div>
+            <div>
+              <h4 className="font-bold text-slate-700 mb-4 text-base">고객안내</h4>
+              <p className="mb-1">이메일 : support@videoplr.com (24시간 접수 가능)</p>
+              <p className="mb-1">전화 : 02-1234-5678 (평일 10:00 ~ 17:00 / 점심시간 12:00 ~ 13:00)</p>
+              <p className="mb-4">주말 및 공휴일 휴무</p>
+              <div className="flex gap-4 text-xs font-medium text-slate-600">
+                <a href="#" className="hover:text-blue-600 transition-colors">이용약관</a>
+                <a href="#" className="hover:text-blue-600 transition-colors font-bold">개인정보처리방침</a>
+                <a href="#" className="hover:text-blue-600 transition-colors">환불규정</a>
+              </div>
+            </div>
+          </div>
+          <div className="border-t border-slate-200 pt-8 text-center text-xs text-slate-400">
+            <p className="mb-2">본 페이지는 기존 구매자 전용 시크릿 혜택 페이지입니다.</p>
+            <p>© {new Date().getFullYear()} Video PLR Package. All rights reserved.</p>
+          </div>
+        </div>
       </footer>
 
       {/* 토스페이먼츠 결제 모달 (Dialog) */}
       <Dialog open={isPaymentModalOpen} onOpenChange={setIsPaymentModalOpen}>
-        <DialogContent className="max-w-2xl bg-white max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-2xl bg-white max-h-[90vh] overflow-y-auto w-[95vw]">
           <DialogHeader>
-            <DialogTitle>안전한 결제</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className="text-2xl font-bold text-slate-900">안전한 결제</DialogTitle>
+            <DialogDescription className="text-base text-slate-500">
               토스페이먼츠를 통해 안전하게 결제가 진행됩니다.
             </DialogDescription>
           </DialogHeader>
           
-          <div className="p-4 space-y-4">
-            {/* 할인 쿠폰 */}
-            <div className="flex items-center gap-2 mb-4 p-4 bg-slate-50 rounded-lg border">
-              <input 
-                type="checkbox" 
-                id="coupon-box" 
-                className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-600"
-                checked={isCouponApplied}
-                onChange={(e) => setIsCouponApplied(e.target.checked)}
-              />
-              <label htmlFor="coupon-box" className="font-medium text-slate-700 cursor-pointer">
-                5,000원 특별 할인 쿠폰 적용
-              </label>
+          <div className="p-1 md:p-4 space-y-4">
+            <div className="bg-blue-50 text-blue-700 p-4 rounded-xl border border-blue-100 text-sm font-bold flex items-center gap-2">
+              <CheckCircle className="w-5 h-5 text-blue-600 shrink-0" />
+              PLR 구매자 전용 초특가 할인이 자동 적용되었습니다.
             </div>
 
-            {/* 토스 결제 위젯이 렌더링될 DOM 요소 */}
             <div id="payment-method" className="w-full"></div>
             <div id="agreement" className="w-full"></div>
 
-            {/* 결제 요청 버튼 */}
             <Button 
               size="lg" 
-              className="w-full bg-[#3182f6] hover:bg-[#2b72d6] text-white text-lg h-14 mt-4"
+              className="w-full bg-[#3182f6] hover:bg-[#2b72d6] text-white text-xl font-bold h-16 rounded-xl mt-4"
               onClick={handlePaymentRequest}
             >
-              {(isCouponApplied ? price - 5000 : price).toLocaleString()}원 결제하기
+              {price.toLocaleString()}원 결제하기
             </Button>
           </div>
         </DialogContent>
