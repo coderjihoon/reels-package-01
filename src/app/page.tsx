@@ -381,6 +381,19 @@ export default function LandingPage() {
                 </div>
 
                 <div className="relative z-10 space-y-8 max-w-3xl mx-auto text-center">
+                  <div className="max-w-[260px] mx-auto overflow-hidden rounded-2xl border border-slate-200 shadow-sm bg-black mb-6">
+                    <video
+                      src="/video-02.mp4"
+                      aria-label="Video 02"
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      preload="metadata"
+                      className="w-full h-auto block"
+                    />
+                  </div>
+
                   <p className="text-lg md:text-xl text-slate-700 leading-relaxed font-medium">
                     한국에선 아직 생소한 <span className="text-blue-600 font-bold underline underline-offset-4 decoration-blue-200">라이선스(PLR, MRR)</span> 개념입니다. <br className="hidden md:block" />
                     누구나 파는 물건이 아닌 <strong className="text-slate-900">&apos;블루오션&apos;</strong>일 때 선점하세요.
@@ -562,6 +575,12 @@ export default function LandingPage() {
                       <span className="whitespace-nowrap">결제하고 다운로드</span>
                     </Button>
                   </div>
+
+                  <p className="max-w-2xl mx-auto whitespace-pre-line text-center text-[11px] md:text-xs leading-relaxed text-white/80 pt-2">
+                    그대로 사용하실 경우 플랫폼측의 제제가 있을 수 있습니다.{"\n"}
+                    (원 저작자가 문제를 제기하지는 않지만 시스템상 필터링 될 수 있습니다).{"\n"}
+                    그래서 어느정도 수정,편집 후 사용을 권장드립니다.
+                  </p>
                 </div>
               </div>
             </section>
@@ -590,7 +609,7 @@ export default function LandingPage() {
               </div>
               <div className="flex justify-between text-sm text-slate-600">
                 <span>일반 할인가</span>
-                <span>32,000원</span>
+                <span>30,000원</span>
               </div>
               <div className="flex justify-between items-center pt-2">
                 <span className="font-bold text-slate-900">최종 혜택가</span>
@@ -605,7 +624,6 @@ export default function LandingPage() {
               <li className="flex gap-2 items-start"><Check className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" /> 평생 소장 및 무제한 사용 권한</li>
               <li className="flex gap-2 items-start"><Check className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" /> 수정, 상업적 이용 (PLR)</li>
               <li className="flex gap-2 items-start font-bold text-slate-900"><Check className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" /> 패키지 100% 마진 재판매 권한 (MRR)</li>
-              <li className="flex gap-2 items-start text-orange-600 font-bold"><Gift className="w-4 h-4 text-orange-600 shrink-0 mt-0.5" /> 1:1 수익화 가이드 무제한 제공</li>
             </ul>
 
             <Button 
