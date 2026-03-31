@@ -624,6 +624,7 @@ export default function LandingPage() {
               <li className="flex gap-2 items-start"><Check className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" /> 평생 소장 및 무제한 사용 권한</li>
               <li className="flex gap-2 items-start"><Check className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" /> 수정, 상업적 이용 (PLR)</li>
               <li className="flex gap-2 items-start font-bold text-slate-900"><Check className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" /> 패키지 100% 마진 재판매 권한 (MRR)</li>
+              <li className="flex gap-2 items-start font-bold text-red-600"><Check className="w-4 h-4 text-red-600 shrink-0 mt-0.5" /> 배송 주기 : 구매 후 즉시 다운로드 가능</li>
             </ul>
 
             <Button 
