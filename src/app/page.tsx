@@ -647,6 +647,9 @@ export default function LandingPage() {
           <div className="text-2xl font-extrabold text-slate-900 leading-none">
             {price.toLocaleString()}<span className="text-sm font-bold text-slate-600 ml-0.5">원</span>
           </div>
+          <div className="mt-1 text-[11px] font-bold text-red-600 leading-tight">
+            배송 주기 : 구매 후 즉시 다운로드 가능
+          </div>
         </div>
         <Button 
           className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-8 h-12 rounded-xl"
