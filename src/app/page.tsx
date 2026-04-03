@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useSyncExternalStore } from "react";
 import { loadPaymentWidget, PaymentWidgetInstance } from "@tosspayments/payment-widget-sdk";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -26,6 +26,11 @@ export default function LandingPage() {
   const [paymentWidget, setPaymentWidget] = useState<PaymentWidgetInstance | null>(null);
   const paymentMethodsWidgetRef = useRef<ReturnType<PaymentWidgetInstance["renderPaymentMethods"]> | null>(null);
   const price = 30000;
+  const isMounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
 
   const clientKey = process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY || "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm";
   const customerKey = "lMFsftZj_6_dYqQmAwrGn";
@@ -50,7 +55,6 @@ export default function LandingPage() {
 
     return () => observer.disconnect();
   }, []);
-
   // 토스 결제위젯 초기화 및 렌더링
   useEffect(() => {
     if (!isPaymentModalOpen) return;
@@ -255,16 +259,20 @@ export default function LandingPage() {
                 <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-2xl blur opacity-10"></div>
                 <div className="relative bg-white border border-blue-100 p-8 rounded-2xl shadow-sm text-center overflow-hidden">
                   <div className="mb-8 overflow-hidden max-w-[220px] md:max-w-[260px] mx-auto">
-                    <video
-                      src="/video-01.mp4"
-                      aria-label="Solution Illustration"
-                      autoPlay
-                      muted
-                      loop
-                      playsInline
-                      preload="metadata"
-                      className="w-full h-auto rounded-xl"
-                    />
+                    {isMounted ? (
+                      <video
+                        src="/video-01.mp4"
+                        aria-label="Solution Illustration"
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                        preload="metadata"
+                        className="w-full h-auto rounded-xl"
+                      />
+                    ) : (
+                      <div className="aspect-square w-full rounded-xl bg-slate-100" aria-hidden="true" />
+                    )}
                   </div>
                   <p className="text-lg md:text-xl text-slate-700 font-medium leading-relaxed">
                     조회수가 보장된 <span className="text-blue-600 font-bold">고퀄리티 영상 소스들</span>로 <br className="hidden md:block" />
@@ -382,16 +390,20 @@ export default function LandingPage() {
 
                 <div className="relative z-10 space-y-8 max-w-3xl mx-auto text-center">
                   <div className="max-w-[260px] mx-auto overflow-hidden rounded-2xl border border-slate-200 shadow-sm bg-black mb-6">
-                    <video
-                      src="/video-02.mp4"
-                      aria-label="Video 02"
-                      autoPlay
-                      muted
-                      loop
-                      playsInline
-                      preload="metadata"
-                      className="w-full h-auto block"
-                    />
+                    {isMounted ? (
+                      <video
+                        src="/video-02.mp4"
+                        aria-label="Video 02"
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                        preload="metadata"
+                        className="w-full h-auto block"
+                      />
+                    ) : (
+                      <div className="aspect-[4/5] w-full bg-slate-900" aria-hidden="true" />
+                    )}
                   </div>
 
                   <p className="text-lg md:text-xl text-slate-700 leading-relaxed font-medium">
@@ -733,6 +745,7 @@ export default function LandingPage() {
               <p className="mb-1">대표자 : 김선우</p>
               <p className="mb-1">사업자등록번호 : 859-20-02000</p>
               <p className="mb-1">주소 : 경기도 성남시 중원구 은행로38번길 17-12 401호</p>
+              <p className="mb-1">통신판매업신고번호 : 제 2024-별내-1811</p>
               <p className="mb-1">URL : https://barode.vercel.app</p>
             </div>
             <div>
