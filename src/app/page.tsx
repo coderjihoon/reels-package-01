@@ -584,6 +584,70 @@ export default function LandingPage() {
                 </div>
               </div>
             </section>
+
+            {/* Section: Refund Policy */}
+            <section id="refund" className="scroll-mt-32">
+              <div className="bg-white border-b border-x border-slate-200 rounded-b-2xl p-6 md:p-10 space-y-12 md:space-y-16 shadow-sm">
+                <div className="mx-auto flex max-w-md flex-col items-center space-y-4 text-center">
+                  <Badge className="w-fit bg-slate-100 text-slate-700 hover:bg-slate-100 border-none px-4 py-1.5 text-sm font-bold">
+                    REFUND POLICY
+                  </Badge>
+                  <div className="space-y-3">
+                    <h2 className="text-2xl md:text-4xl font-bold tracking-tight text-slate-900">
+                      환불 규정
+                    </h2>
+                  </div>
+                </div>
+
+                <div className="space-y-6">
+                  <div className="rounded-2xl bg-slate-50 border border-slate-200 p-6 md:p-8">
+                    <h3 className="text-lg md:text-xl font-bold text-slate-900 mb-5">환불 가능 조건</h3>
+                    <div className="space-y-4 text-sm md:text-base">
+                      <div className="flex gap-3">
+                        <span className="mt-1 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-100 text-blue-700 text-xs font-bold">1</span>
+                        <p className="text-slate-700 leading-relaxed">
+                          구매 후 7일 이내이며, 콘텐츠를 열람(다운로드)하지 않은 경우
+                        </p>
+                      </div>
+                      <div className="flex gap-3">
+                        <span className="mt-1 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-100 text-blue-700 text-xs font-bold">2</span>
+                        <p className="text-slate-700 leading-relaxed">
+                          상품 내용이 표시·광고와 다르거나 계약 내용과 다르게 이행된 경우
+                        </p>
+                      </div>
+                      <div className="flex gap-3">
+                        <span className="mt-1 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-100 text-blue-700 text-xs font-bold">3</span>
+                        <p className="text-slate-700 leading-relaxed">
+                          서비스 자체의 오류로 인해 정상적인 이용이 불가능한 경우
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="rounded-2xl bg-slate-900 text-white border border-slate-800 p-6 md:p-8">
+                    <h3 className="text-lg md:text-xl font-bold mb-5">환불 제한 사유</h3>
+                    <ul className="space-y-3 text-sm md:text-base text-slate-200">
+                      <li className="flex gap-3">
+                        <CheckCircle className="w-5 h-5 text-blue-300 shrink-0 mt-0.5" />
+                        <span>디지털 콘텐츠의 이용이 개시된 경우</span>
+                      </li>
+                      <li className="flex gap-3">
+                        <CheckCircle className="w-5 h-5 text-blue-300 shrink-0 mt-0.5" />
+                        <span>시간 경과로 재판매가 곤란할 정도로 가치가 현저히 감소한 경우</span>
+                      </li>
+                      <li className="flex gap-3">
+                        <CheckCircle className="w-5 h-5 text-blue-300 shrink-0 mt-0.5" />
+                        <span>개별 주문 제작 또는 1:1 맞춤형 서비스가 이미 착수된 경우</span>
+                      </li>
+                      <li className="flex gap-3">
+                        <CheckCircle className="w-5 h-5 text-blue-300 shrink-0 mt-0.5" />
+                        <span>판매자가 사전 고지한 환불 불가 사유에 해당하는 경우</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </section>
             </div>
             </div>
 
@@ -669,6 +733,7 @@ export default function LandingPage() {
               <p className="mb-1">대표자 : 김선우</p>
               <p className="mb-1">사업자등록번호 : 859-20-02000</p>
               <p className="mb-1">주소 : 경기도 성남시 중원구 은행로38번길 17-12 401호</p>
+              <p className="mb-1">URL : https://barode.vercel.app</p>
             </div>
             <div>
               <h4 className="font-bold text-slate-700 mb-4 text-base">고객안내</h4>
@@ -678,7 +743,7 @@ export default function LandingPage() {
               <div className="flex gap-4 text-xs font-medium text-slate-600">
                 <a href="#" className="hover:text-blue-600 transition-colors">이용약관</a>
                 <a href="#" className="hover:text-blue-600 transition-colors font-bold">개인정보처리방침</a>
-                <a href="#" className="hover:text-blue-600 transition-colors">환불규정</a>
+                <a href="#refund" className="hover:text-blue-600 transition-colors">환불규정</a>
               </div>
             </div>
           </div>
