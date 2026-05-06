@@ -2,7 +2,12 @@
 
 import { useState, useEffect, useRef, useSyncExternalStore } from "react";
 import Image from "next/image";
-import { loadPaymentWidget, PaymentWidgetInstance } from "@tosspayments/payment-widget-sdk";
+import {
+  loadTossPayments,
+  type TossPaymentsWidgets,
+  type WidgetAgreementWidget,
+  type WidgetPaymentMethodWidget,
+} from "@tosspayments/tosspayments-sdk";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
@@ -21,11 +26,17 @@ import {
 } from "lucide-react";
 
 const COPYRIGHT_YEAR = 2026;
+const PAYMENT_METHOD_SELECTOR = "#payment-method";
+const AGREEMENT_SELECTOR = "#agreement";
 
 export default function LandingPage() {
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
-  const [paymentWidget, setPaymentWidget] = useState<PaymentWidgetInstance | null>(null);
-  const paymentMethodsWidgetRef = useRef<ReturnType<PaymentWidgetInstance["renderPaymentMethods"]> | null>(null);
+  const [paymentWidgets, setPaymentWidgets] = useState<TossPaymentsWidgets | null>(null);
+  const [isPaymentWidgetReady, setIsPaymentWidgetReady] = useState(false);
+  const paymentMethodWidgetRef = useRef<WidgetPaymentMethodWidget | null>(null);
+  const agreementWidgetRef = useRef<WidgetAgreementWidget | null>(null);
+  const paymentMethodContainerRef = useRef<HTMLDivElement | null>(null);
+  const agreementContainerRef = useRef<HTMLDivElement | null>(null);
   const price = 30000;
   const isMounted = useSyncExternalStore(
     () => () => {},
@@ -33,7 +44,7 @@ export default function LandingPage() {
     () => false
   );
 
-  const clientKey = process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY || "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm";
+  const clientKey = process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY;
   const customerKey = "lMFsftZj_6_dYqQmAwrGn";
 
   const [activeTab, setActiveTab] = useState("intro");
@@ -56,34 +67,114 @@ export default function LandingPage() {
 
     return () => observer.disconnect();
   }, []);
-  // 토스 결제위젯 초기화 및 렌더링
+  // 토스페이먼츠 v2 결제위젯 초기화 및 렌더링
   useEffect(() => {
-    if (!isPaymentModalOpen) return;
+    let isCancelled = false;
+    let animationFrameId: number | null = null;
 
-    (async () => {
+    const resetRenderedWidgets = async () => {
       try {
-        const widget = await loadPaymentWidget(clientKey, customerKey);
-        setPaymentWidget(widget);
-
-        const paymentMethodsWidget = widget.renderPaymentMethods(
-          "#payment-method",
-          { value: price },
-          { variantKey: "DEFAULT" }
-        );
-        paymentMethodsWidgetRef.current = paymentMethodsWidget;
-
-        widget.renderAgreement("#agreement", { variantKey: "AGREEMENT" });
+        await paymentMethodWidgetRef.current?.destroy();
       } catch (error) {
-        console.error("결제 위젯 렌더링 실패:", error);
+        console.error("토스 결제수단 위젯 정리 실패:", error);
+      } finally {
+        paymentMethodWidgetRef.current = null;
       }
-    })();
-  }, [isPaymentModalOpen, clientKey, price]);
+
+      try {
+        await agreementWidgetRef.current?.destroy();
+      } catch (error) {
+        console.error("토스 약관 위젯 정리 실패:", error);
+      } finally {
+        agreementWidgetRef.current = null;
+      }
+
+      paymentMethodContainerRef.current?.replaceChildren();
+      agreementContainerRef.current?.replaceChildren();
+    };
+
+    const renderPaymentWidgets = async () => {
+      if (!clientKey) {
+        console.error("NEXT_PUBLIC_TOSS_CLIENT_KEY 환경변수가 설정되지 않았습니다.");
+        return;
+      }
+
+      if (!paymentMethodContainerRef.current || !agreementContainerRef.current) {
+        console.error("토스 결제위젯 렌더링 대상 DOM이 아직 준비되지 않았습니다.");
+        return;
+      }
+
+      try {
+        await resetRenderedWidgets();
+        if (isCancelled) return;
+
+        const tossPayments = await loadTossPayments(clientKey);
+        if (isCancelled) return;
+
+        const widgets = tossPayments.widgets({ customerKey });
+        await widgets.setAmount({ currency: "KRW", value: price });
+        if (isCancelled) return;
+
+        const paymentMethodWidget = await widgets.renderPaymentMethods({
+          selector: PAYMENT_METHOD_SELECTOR,
+          variantKey: "DEFAULT",
+        });
+        if (isCancelled) {
+          await paymentMethodWidget.destroy();
+          return;
+        }
+
+        const agreementWidget = await widgets.renderAgreement({
+          selector: AGREEMENT_SELECTOR,
+          variantKey: "DEFAULT",
+        });
+        if (isCancelled) {
+          await paymentMethodWidget.destroy();
+          await agreementWidget.destroy();
+          return;
+        }
+
+        paymentMethodWidgetRef.current = paymentMethodWidget;
+        agreementWidgetRef.current = agreementWidget;
+        setPaymentWidgets(widgets);
+        setIsPaymentWidgetReady(true);
+      } catch (error) {
+        console.error("토스 결제위젯 렌더링 실패:", error);
+        setPaymentWidgets(null);
+        setIsPaymentWidgetReady(false);
+      }
+    };
+
+    setPaymentWidgets(null);
+    setIsPaymentWidgetReady(false);
+
+    if (isPaymentModalOpen) {
+      animationFrameId = window.requestAnimationFrame(() => {
+        void renderPaymentWidgets();
+      });
+    } else {
+      void resetRenderedWidgets();
+    }
+
+    return () => {
+      isCancelled = true;
+      if (animationFrameId !== null) {
+        window.cancelAnimationFrame(animationFrameId);
+      }
+      setPaymentWidgets(null);
+      setIsPaymentWidgetReady(false);
+      void resetRenderedWidgets();
+    };
+  }, [isPaymentModalOpen, clientKey, customerKey, price]);
 
   const handlePaymentRequest = async () => {
     try {
-      if (!paymentWidget) return;
+      if (!paymentWidgets || !isPaymentWidgetReady) {
+        console.error("토스 결제위젯이 아직 준비되지 않았습니다.");
+        return;
+      }
 
-      await paymentWidget.requestPayment({
+      await paymentWidgets.requestPayment({
         orderId: `order_${Math.random().toString(36).substring(2, 11)}`,
         orderName: "조회수가 보장된 영상 패키지 (구매자 전용)",
         successUrl: window.location.origin + "/success",
@@ -783,13 +874,14 @@ export default function LandingPage() {
               PLR 구매자 전용 초특가 할인이 자동 적용되었습니다.
             </div>
 
-            <div id="payment-method" className="w-full"></div>
-            <div id="agreement" className="w-full"></div>
+            <div id="payment-method" ref={paymentMethodContainerRef} className="w-full"></div>
+            <div id="agreement" ref={agreementContainerRef} className="w-full"></div>
 
             <Button 
               size="lg" 
               className="w-full bg-[#3182f6] hover:bg-[#2b72d6] text-white text-xl font-bold h-16 rounded-xl mt-4"
               onClick={handlePaymentRequest}
+              disabled={!isPaymentWidgetReady}
             >
               {price.toLocaleString()}원 결제하기
             </Button>
