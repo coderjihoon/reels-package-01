@@ -860,7 +860,7 @@ export default function LandingPage() {
 
       {/* 토스페이먼츠 결제 모달 (Dialog) */}
       <Dialog open={isPaymentModalOpen} onOpenChange={setIsPaymentModalOpen}>
-        <DialogContent className="max-w-2xl bg-white max-h-[90vh] overflow-y-auto w-[95vw]">
+        <DialogContent className="w-[95vw] !max-w-2xl min-w-0 bg-white max-h-[90vh] overflow-y-auto overflow-x-hidden">
           <DialogHeader>
             <DialogTitle className="text-2xl font-bold text-slate-900">안전한 결제</DialogTitle>
             <DialogDescription className="text-base text-slate-500">
@@ -868,14 +868,14 @@ export default function LandingPage() {
             </DialogDescription>
           </DialogHeader>
           
-          <div className="p-1 md:p-4 space-y-4">
+          <div className="min-w-0 p-1 md:p-4 space-y-4">
             <div className="bg-blue-50 text-blue-700 p-4 rounded-xl border border-blue-100 text-sm font-bold flex items-center gap-2">
               <CheckCircle className="w-5 h-5 text-blue-600 shrink-0" />
               PLR 구매자 전용 초특가 할인이 자동 적용되었습니다.
             </div>
 
-            <div id="payment-method" ref={paymentMethodContainerRef} className="w-full"></div>
-            <div id="agreement" ref={agreementContainerRef} className="w-full"></div>
+            <div id="payment-method" ref={paymentMethodContainerRef} className="w-full min-w-0 overflow-hidden"></div>
+            <div id="agreement" ref={agreementContainerRef} className="w-full min-w-0 overflow-hidden"></div>
 
             <Button 
               size="lg" 
