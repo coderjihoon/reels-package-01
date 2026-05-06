@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useEffect, useRef, useSyncExternalStore } from "react";
+import Image from "next/image";
 import { loadPaymentWidget, PaymentWidgetInstance } from "@tosspayments/payment-widget-sdk";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import {
@@ -12,7 +12,6 @@ import {
   ShieldCheck,
   Check,
   Zap,
-  Gift,
   TrendingUp,
   Share2,
   RefreshCcw,
@@ -20,6 +19,8 @@ import {
   ShieldAlert,
   FileX,
 } from "lucide-react";
+
+const COPYRIGHT_YEAR = 2026;
 
 export default function LandingPage() {
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
@@ -116,10 +117,12 @@ export default function LandingPage() {
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 pb-24 lg:pb-0">
       <div className="sticky top-0 z-50 border-b border-blue-500 bg-gradient-to-r from-blue-700 via-blue-600 to-blue-700 shadow-md backdrop-blur">
         <div className="max-w-6xl mx-auto px-4 md:px-6 py-1.5 md:py-2 flex items-center justify-center">
-          <img
+          <Image
             src="/BARODE_logo_final.png"
             alt="Video PLR 로고"
-            loading="eager"
+            width={3848}
+            height={1116}
+            priority
             className="h-7 md:h-8 w-auto"
           />
         </div>
@@ -163,14 +166,12 @@ export default function LandingPage() {
           
           {/* Right Image Area */}
           <div className="order-1 lg:order-none mt-6 lg:mt-0 w-full lg:w-1/2 flex justify-center lg:justify-end lg:self-start">
-            <div className="relative w-full max-w-md aspect-square rounded-3xl overflow-hidden shadow-2xl border-4 border-white transform rotate-2 hover:rotate-0 transition-transform duration-500">
-              {/* Using a placeholder image related to video/social media */}
-                <img 
-                  src="/hero.png" 
-                  alt="영상 편집 패키지 예시" 
-                  loading="eager"
-                  className="w-full h-full object-cover"
-                />
+            <div
+              role="img"
+              aria-label="영상 편집 패키지 예시"
+              className="relative w-full max-w-md aspect-square rounded-3xl overflow-hidden shadow-2xl border-4 border-white transform rotate-2 hover:rotate-0 transition-transform duration-500 bg-cover bg-center"
+              style={{ backgroundImage: "url('/hero.png')" }}
+            >
               <div className="absolute bottom-3 left-6 right-6">
                 <Badge className="bg-white/90 text-blue-700 hover:bg-white px-4 py-2.5 mb-2 backdrop-blur-sm border-none shadow-sm font-bold h-auto">
                   5,000+ 영상 소스
@@ -700,7 +701,7 @@ export default function LandingPage() {
               <li className="flex gap-2 items-start"><Check className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" /> 평생 소장 및 무제한 사용 권한</li>
               <li className="flex gap-2 items-start"><Check className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" /> 수정, 상업적 이용 (PLR)</li>
               <li className="flex gap-2 items-start font-bold text-slate-900"><Check className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" /> 패키지 100% 마진 재판매 권한 (MRR)</li>
-              <li className="flex gap-2 items-start font-bold text-red-600"><Check className="w-4 h-4 text-red-600 shrink-0 mt-0.5" /> 배송 주기 : 구매 후 즉시 다운로드 가능</li>
+              <li className="flex gap-2 items-start font-bold text-red-600"><Check className="w-4 h-4 text-red-600 shrink-0 mt-0.5" /> 구매 후 즉시 다운로드 가능</li>
             </ul>
 
             <Button 
@@ -724,7 +725,7 @@ export default function LandingPage() {
             {price.toLocaleString()}<span className="text-sm font-bold text-slate-600 ml-0.5">원</span>
           </div>
           <div className="mt-1 text-[11px] font-bold text-red-600 leading-tight">
-            배송 주기 : 구매 후 즉시 다운로드 가능
+            구매 후 즉시 다운로드 가능
           </div>
         </div>
         <Button 
@@ -745,7 +746,7 @@ export default function LandingPage() {
               <p className="mb-1">대표자 : 김선우</p>
               <p className="mb-1">사업자등록번호 : 859-20-02000</p>
               <p className="mb-1">주소 : 경기도 성남시 중원구 은행로38번길 17-12 401호</p>
-              <p className="mb-1">통신판매업신고번호 : 제 2024-별내-1811</p>
+              <p className="mb-1">통신판매업신고번호 : 제 2026-성남중원-0248 호</p>
               <p className="mb-1">URL : https://barode.vercel.app</p>
             </div>
             <div>
@@ -761,7 +762,7 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="border-t border-slate-200 pt-8 text-center text-xs text-slate-400">
-            <p>© {new Date().getFullYear()} BARODE. All rights reserved.</p>
+            <p>© {COPYRIGHT_YEAR} BARODE. All rights reserved.</p>
           </div>
         </div>
       </footer>

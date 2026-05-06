@@ -89,7 +89,7 @@ function SuccessContent() {
           {/* 다운로드 영역 */}
           {downloadLink && (
             <div className="bg-blue-50 border border-blue-100 rounded-xl p-6 mb-8">
-              <a href={downloadLink} download="plr-package-5000.zip">
+              <a href={downloadLink} download="영상 패키지.zip">
                 <Button className="w-full bg-[#3182f6] hover:bg-[#2b72d6] text-white h-12 shadow-md">
                   파일 즉시 다운로드 (.zip)
                 </Button>

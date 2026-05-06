@@ -40,8 +40,8 @@ export async function POST(request: Request) {
       const customerEmail = "customer123@gmail.com"; // 실제로는 requestPayment 시 넘긴 이메일을 토스 웹훅이나 DB에서 조회하여 사용
       console.log(`[Email Service] ${customerEmail} 로 5,000+ 영상 PLR 패키지 다운로드 링크 발송 완료!`);
 
-      // [가상 구현] 임시 다운로드 링크 생성 (public 폴더 내의 파일 경로)
-      const mockDownloadLink = "/dummy-plr-package.zip";
+      // [가상 구현] public 폴더 내의 실제 다운로드 파일 경로
+      const mockDownloadLink = "/영상 패키지.zip";
 
       return NextResponse.json({ 
         success: true, 
