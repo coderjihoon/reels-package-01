@@ -37,7 +37,7 @@ export default function LandingPage() {
   const agreementWidgetRef = useRef<WidgetAgreementWidget | null>(null);
   const paymentMethodContainerRef = useRef<HTMLDivElement | null>(null);
   const agreementContainerRef = useRef<HTMLDivElement | null>(null);
-  const price = 30000;
+  const price = 25000;
   const isMounted = useSyncExternalStore(
     () => () => {},
     () => true,
@@ -594,7 +594,7 @@ export default function LandingPage() {
                       { 
                         title: "초특가 할인", 
                         subtitle: "Special Price",
-                        content: "런칭기념 할인가 적용 중(30,000원) \n추후 정상가(79,000원)로 인상 예정",
+                        content: "런칭기념 할인가 적용 중(25,000원) \n추후 정상가(79,000원)로 인상 예정",
                         icon: Zap,
                         color: "text-yellow-600",
                         bgColor: "bg-yellow-100"
@@ -653,18 +653,8 @@ export default function LandingPage() {
                   
                   <div className="w-full border-t border-white/30 pt-8">
                     <div className="w-full max-w-md md:max-w-xs mx-auto rounded-2xl px-4 py-5 flex flex-col items-center gap-4">
-                      <div className="w-full space-y-2">
-                        <div className="flex items-center justify-between text-sm md:text-base text-white/90">
-                          <span>정가</span>
-                          <span className="line-through decoration-white/70">79,000원</span>
-                        </div>
-                        <div className="flex items-center justify-between text-sm md:text-base text-white">
-                          <span>일반 할인가</span>
-                          <span className="font-semibold">30,000원</span>
-                        </div>
-                      </div>
                       <p className="text-white text-sm font-black tracking-[0.16em] uppercase">최종 혜택가</p>
-                      <p className="text-4xl sm:text-5xl md:text-6xl font-black text-yellow-300 whitespace-nowrap tracking-tight">30,000<span className="text-xl sm:text-2xl md:text-3xl">원</span></p>
+                      <p className="text-4xl sm:text-5xl md:text-6xl font-black text-yellow-300 whitespace-nowrap tracking-tight">{price.toLocaleString()}<span className="text-xl sm:text-2xl md:text-3xl">원</span></p>
                       <Badge className="bg-red-500 text-white border-none font-bold text-sm py-1 px-3">62% OFF 적용됨</Badge>
                     </div>
                   </div>
@@ -771,14 +761,6 @@ export default function LandingPage() {
             </p>
 
             <div className="space-y-4 mb-6">
-              <div className="flex justify-between text-sm text-slate-600">
-                <span>정가</span>
-                <span className="line-through">79,000원</span>
-              </div>
-              <div className="flex justify-between text-sm text-slate-600">
-                <span>일반 할인가</span>
-                <span>30,000원</span>
-              </div>
               <div className="flex justify-between items-center pt-2">
                 <span className="font-bold text-slate-900">최종 혜택가</span>
                 <div className="text-right">
